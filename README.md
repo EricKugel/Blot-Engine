@@ -6,6 +6,7 @@ This is an engine to be used with [hackclub blot project](https://github.com/hac
  - The ability to move, scale, copy/paste, etc "DrawingObjects" (like Blot polylines) on a MS paint-like canvas. This would, for example, allow you to position some text below an image, or scale an image to fit in the drawing area.
  - Create DrawingObjects through various default plugins. These plugins will be separated by source (text, image, etc), and there could possibly be a great number of plugins for each. (There's infinitely many artistic or realistic ways to turn an image into a drawing.)
  - Expanded blot font: more text variety using svg font files?
+ - Outputting to a more universal file type, such as gcode
 
 ## Current capabilities:
  - Connect to a Blot machine using jSerialComm and send simple move & pen instructions.
