@@ -1,3 +1,5 @@
+package blot.engine.output;
+
 import com.fazecast.jSerialComm.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
