@@ -2,6 +2,9 @@ package blot.engine.input.parameters;
 
 import javax.swing.*;
 
+/**
+ * Parameter for yes-no questions.
+ */
 public class CheckBoxParameter extends Parameter<Boolean> {
     private JCheckBox checkBox = null;
 

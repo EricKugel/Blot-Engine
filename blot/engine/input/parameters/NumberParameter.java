@@ -2,9 +2,11 @@ package blot.engine.input.parameters;
 
 import javax.swing.*;
 
+/**
+ * Parameter for typing in decimals. If a range is needed, use SliderParameter instead.
+ */
 public class NumberParameter extends Parameter<Double> {
     private JTextField textField = new JTextField();
-    private String title = "";
     private boolean required = false;
 
     public NumberParameter(String title, boolean required) {
@@ -21,14 +23,14 @@ public class NumberParameter extends Parameter<Double> {
     public Double getValue() throws ParameterValidationException {
         String stringValue = textField.getText();
         if (required && stringValue.equals("")) {
-            throw new ParameterValidationException(title + " is a required field");
+            throw new ParameterValidationException(getTitle() + " is a required field");
         }
 
         try {
             double value = Double.parseDouble(stringValue);
             return value;
         } catch(Exception e) {
-            throw new ParameterValidationException(title + " must be a decimal value");
+            throw new ParameterValidationException(getTitle() + " must be a decimal value");
         }
     }
 }

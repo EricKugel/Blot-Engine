@@ -2,6 +2,10 @@ package blot.engine.input.parameters;
 
 import javax.swing.*;
 
+/**
+ * Base class for Parameters. A parameter extends JPanel, meaning it can be
+ * added to a ParameterUi.
+ */
 public abstract class Parameter<T> extends JPanel {
     public abstract T getValue() throws ParameterValidationException;
     private String title;

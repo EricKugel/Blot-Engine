@@ -2,6 +2,9 @@ package blot.engine.input.parameters;
 
 import javax.swing.*;
 
+/**
+ * Parameter for options (a/b/c)
+ */
 public class DropdownParameter extends Parameter<String> {
     private JComboBox<String> comboBox = null;
     

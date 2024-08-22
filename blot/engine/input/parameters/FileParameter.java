@@ -9,6 +9,9 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
+/**
+ * Parameter for uploading files to the engine (images, txt files, etc).
+ */
 public class FileParameter extends Parameter<File> {
     public static final int IMAGE = 0;
     public static final int TEXT = 1;
@@ -17,16 +20,17 @@ public class FileParameter extends Parameter<File> {
     private JFileChooser fileChooser = null;
     private File selectedFile = null;
     private boolean required = false;
-    private String title = "";
 
     public FileParameter(String title, int fileType, boolean required) {
         super(title);
 
         fileChooser = new JFileChooser();
         if (fileType == IMAGE) {
-            fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes()));
+            fileChooser.setFileFilter(new FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes()));
+            fileChooser.setAcceptAllFileFilterUsed(false);
         } else if (fileType == TEXT) {
-            fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Text files", "txt"));
+            fileChooser.setFileFilter(new FileNameExtensionFilter("Text files", "txt"));
+            fileChooser.setAcceptAllFileFilterUsed(false);
         } else if (fileType == OTHER) {
             System.out.println("WARNING: Please implement the desired file type in blot.engine.input.parameters.FileParameter");
         } else {
@@ -57,7 +61,7 @@ public class FileParameter extends Parameter<File> {
 
     public File getValue() throws ParameterValidationException {
         if (required && selectedFile == null) {
-            throw new ParameterValidationException(title + " is a required field");
+            throw new ParameterValidationException(getTitle() + " is a required field");
         }
         return fileChooser.getSelectedFile();
     }

@@ -4,7 +4,10 @@ import java.util.HashMap;
 
 import blot.engine.input.blotLibrary.DrawingObject;
 
-// All engines should implement Engine.
+/**
+ * All plugins/engines MUST implement engine. An engine defines its parameterui,
+ * gets the parameters, runs its process, and returns a drawingobject.
+ */
 public interface Engine {
     public ParameterUi getParameterUi();
     public String getName();

@@ -8,6 +8,9 @@ import java.awt.event.*;
 import java.util.HashMap;
 import java.util.ArrayList;
 
+/**
+ * An easy way to give engines their arguments. Uses Parameters.
+ */
 public class ParameterUi extends JFrame {
     private Engine engine = null;
     private ArrayList<Parameter> parameters = new ArrayList<Parameter>();
@@ -25,6 +28,7 @@ public class ParameterUi extends JFrame {
         parameters.add(parameter);
     }
 
+    // TODO: Rename
     public void setParameters() {
         JButton submitButton = new JButton("Run " + engine.getName());
         submitButton.addActionListener(new ActionListener() {
