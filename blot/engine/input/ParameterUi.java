@@ -11,9 +11,10 @@ import java.util.ArrayList;
 /**
  * An easy way to give engines their arguments. Uses Parameters.
  */
-public class ParameterUi extends JFrame {
+public class ParameterUi extends JFrame implements ActionListener {
     private Engine engine = null;
     private ArrayList<Parameter> parameters = new ArrayList<Parameter>();
+    private HashMap<String, Object> parameterValues = new HashMap<String, Object>();
 
     public ParameterUi(Engine engine) {
         this.engine = engine;
@@ -28,21 +29,23 @@ public class ParameterUi extends JFrame {
         parameters.add(parameter);
     }
 
-    // TODO: Rename
-    public void setParameters() {
+    public synchronized HashMap<String, Object> getParameters() {
         JButton submitButton = new JButton("Run " + engine.getName());
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                submit();
-            }
-        });
+        submitButton.addActionListener(this);
         add(submitButton);
         setVisible(true);
         pack();
+
+        try {
+            wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return this.parameterValues;
     }
 
-    private void submit() {
+    private HashMap<String, Object> submit() {
         HashMap<String, Object> dataMap = new HashMap<String, Object>();
         for (Parameter parameter : parameters) {
             try {
@@ -50,10 +53,19 @@ public class ParameterUi extends JFrame {
             } catch (ParameterValidationException e) {
                 String message = e.getMessage();
                 JOptionPane.showMessageDialog(this, message);
-                return;
+                return null;
             }
         }
         this.dispose();
-        engine.run(dataMap);
+        return dataMap;
+    }
+
+    @Override
+    public synchronized void actionPerformed(ActionEvent e) {
+        HashMap<String, Object> values = submit();
+        if (values != null) {
+            parameterValues = values;
+            notifyAll();
+        }
     }
 }

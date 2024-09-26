@@ -6,6 +6,7 @@ import blot.engine.input.Engine;
 import blot.engine.input.ParameterUi;
 import blot.engine.input.parameters.*;
 import blot.engine.input.blotLibrary.DrawingObject;
+import blot.engine.input.blotLibrary.Turtle;
 
 public class ExampleImageEngine implements Engine {
     private String engineName = "Example Image Engine";
@@ -34,6 +35,14 @@ public class ExampleImageEngine implements Engine {
             System.out.println("\t" + parameters.get(key));
         }
         System.out.println("Thank you.");
-        return new DrawingObject();
+        
+        Turtle turtle = new Turtle();
+        for (int i = 0; i < 4; i++) {
+            turtle.forward(100);
+            turtle.left(90);
+        }
+
+
+        return turtle.getDrawingObject();
     }
 }

@@ -16,7 +16,6 @@ public class Turtle {
      */
     public Turtle() {
         drawingObject.newLine();
-        drawingObject.addPoint(new Point(0, 0));
     }
 
     public double getAngle() {
@@ -66,10 +65,13 @@ public class Turtle {
             double dist = Math.sqrt(Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2));
             if (dist < 0.0001) {
                 return;
-            } else if (this.drawingObject.getLastPath().size() == 1) {
-                this.drawingObject.deletePoint();
-                this.drawingObject.addPoint(new Point(x, y));
             }
+
+            if (this.drawingObject.getLastPath().size() > 0 && this.drawingObject.getLastPath().getLast().equals(this.position)) {
+                this.drawingObject.deletePoint();
+            }
+            this.drawingObject.addPoint(this.position);
+            this.drawingObject.addPoint(new Point(x, y));
         }
 
         this.position = new Point(x, y);

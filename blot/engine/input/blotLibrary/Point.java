@@ -12,6 +12,16 @@ public class Point {
         this.y = y;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        Point otherPoint = (Point) other;
+        return this.x == otherPoint.getX() && this.y == otherPoint.getY();
+    }
+
+    public Point clone() {
+        return new Point(this.x, this.y);
+    }
+
     public void setX(float x) {
         this.x = x;
     }
@@ -68,6 +78,6 @@ public class Point {
      */
     public void scale(float factorX, float factorY, float originX, float originY) {
         setX((this.x - originX) * factorX + originX);
-        setY((this.y - originY) * factorY + y);
+        setY((this.y - originY) * factorY + originY);
     }
 }
