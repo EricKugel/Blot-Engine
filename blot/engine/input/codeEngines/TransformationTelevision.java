@@ -47,8 +47,8 @@ public class TransformationTelevision implements Engine {
         for (int i = 0; i < 28; i++) {
             rect(-26, -21 + i, 36, 0, 0, 0, t);
         }
-        for (int i = 0; i < 37; i++) {
-            rect(-26 + i, -21, 0, 29, 0, 0, t);
+        for (int i = 1; i < 37; i++) {
+            rect(-26 + i, -22, 0, 29, 0, 0, t);
         }
         rect(16, -24, 14, 33, 0, 0, t);
         
