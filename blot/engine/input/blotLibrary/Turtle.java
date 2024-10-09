@@ -43,6 +43,7 @@ public class Turtle {
         }
         this.isDrawing = false;
         this.drawingObject.addPoint(position);
+        this.drawingObject.newLine();
     }
 
     /**
@@ -58,10 +59,10 @@ public class Turtle {
      * @param x the destination's x value.
      * @param y the destination's y value.
      */
-    public void goTo(float x, float y) {
+    public void goTo(double x, double y) {
         if (this.isDrawing) {
-            float lastX = this.position.getX();
-            float lastY = this.position.getY();
+            double lastX = this.position.getX();
+            double lastY = this.position.getY();
             double dist = Math.sqrt(Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2));
             if (dist < 0.0001) {
                 return;
@@ -83,9 +84,9 @@ public class Turtle {
      * @param dx how far to move in the x direction.
      * @param dy how far to move in the y direction.
      */
-    public void step(float dx, float dy) {
-        float x = this.position.getX();
-        float y = this.position.getY();
+    public void step(double dx, double dy) {
+        double x = this.position.getX();
+        double y = this.position.getY();
         this.goTo(x + dx, y + dy);
     }
 
@@ -95,7 +96,7 @@ public class Turtle {
      * @param x the destination's x value.
      * @param y the destination's y value.
      */
-    public void jump(float x, float y) {
+    public void jump(double x, double y) {
         if (this.drawingObject.getLastPath().size() == 1) {
             this.drawingObject.deletePoint();
             this.drawingObject.addPoint(new Point(x, y));
@@ -113,11 +114,11 @@ public class Turtle {
      * @param distance how far to move.
      */
     public void forward(double distance) {
-        float lastX = this.position.getX();
-        float lastY = this.position.getY();
+        double lastX = this.position.getX();
+        double lastY = this.position.getY();
         double a = (this.angle / 180) * Math.PI;
-        float x = (float) (lastX + distance * Math.cos(a));
-        float y = (float) (lastY + distance * Math.sin(a));
+        double x = (double) (lastX + distance * Math.cos(a));
+        double y = (double) (lastY + distance * Math.sin(a));
 
         this.goTo(x, y);
     }
@@ -135,23 +136,28 @@ public class Turtle {
 
         final int n = 64;
         ArrayList<Point> points = new ArrayList<Point>();
-        angle = angle / 180 * Math.PI;
+        angle = Math.toRadians(angle);
         
         for (int i = 0; i <= n; i++) {
             double theta = angle / n * i;
-            points.add(new Point((float) (radius * Math.cos(theta)), (float) (radius * Math.sin(theta))));
+            points.add(new Point((double) (radius * Math.cos(theta)), (double) (radius * Math.sin(theta))));
         }
 
+        Point initial = points.get(0).clone();
         for (Point point : points) {
-            point.translate(this.position.getX(), this.position.getY(), points.get(0).getX(), points.get(0).getY());
-            point.rotate(this.angle + (angle < 0 ? 90 : -90), points.get(0).getX(), points.get(0).getY());
+            point.translate(this.position.getX(), this.position.getY(), initial.getX(), initial.getY());
+            point.rotate(this.angle + (angle < 0 ? 90 : -90), this.position.getX(), this.position.getY());
         }
 
-        for (int i = 1; i <= n; i++) {
+        for (int i = 1; i <= n; i++) {                
             this.goTo(points.get(i).getX(), points.get(i).getY());
+            // if (i == 1) {
+            //     this.jump(points.get(i).getX(), points.get(i).getY());
+            // } else {
+            // }
         }
 
-        this.setAngle(this.angle + angle);
+        this.setAngle(this.angle + Math.toDegrees(angle));
     }
     /**
      * Turns to the right a certain number of degrees.

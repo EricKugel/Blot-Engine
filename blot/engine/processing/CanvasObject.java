@@ -1,5 +1,6 @@
 package blot.engine.processing;
 
+import blot.engine.gui.Gui;
 import blot.engine.input.blotLibrary.DrawingObject;
 import blot.engine.input.blotLibrary.Point;
 
@@ -34,7 +35,7 @@ public class CanvasObject {
             for (int i = 0; i < path.size(); i++) {
                 Point point = path.get(i).clone();
                 point.translate(position.getX(), position.getY(), Canvas.HEIGHT / 2, Canvas.WIDTH / 2);
-                point.scale((float) this.scaleX, (float) this.scaleY, position.getX(), position.getY());
+                point.scale((double) this.scaleX, (double) this.scaleY, position.getX(), position.getY());
                 if (rotation != 0) {
                     point.rotate(this.rotation, position.getX(), position.getY());
                 }   
@@ -43,7 +44,11 @@ public class CanvasObject {
             for (int i = 0; i < transformedPath.size() - 1; i++) {
                 Point start = transformedPath.get(i);
                 Point end = transformedPath.get(i + 1);
-                g.drawLine((int) (start.getX() / Canvas.WIDTH * width), (int) (start.getY() / Canvas.HEIGHT * height), (int) (end.getX() / Canvas.WIDTH * width), (int) (end.getY() / Canvas.HEIGHT * height));
+                g.drawLine(
+                    (int) (start.getX() / Canvas.WIDTH * width), 
+                    (int) (height - (start.getY() / Canvas.HEIGHT * height)), 
+                    (int) (end.getX() / Canvas.WIDTH * width), 
+                    (int) (height - (end.getY() / Canvas.HEIGHT * height)));
             }
         }
     }

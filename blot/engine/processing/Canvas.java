@@ -7,8 +7,8 @@ import blot.engine.gui.Gui;
 import blot.engine.input.blotLibrary.DrawingObject;
 
 public class Canvas extends ArrayList<CanvasObject> {
-    public static final float WIDTH = 100;
-    public static final float HEIGHT = 100;
+    public static final double WIDTH = 100;
+    public static final double HEIGHT = 100;
 
     private Gui gui;
 

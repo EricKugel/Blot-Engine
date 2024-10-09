@@ -37,9 +37,10 @@ public class ExampleImageEngine implements Engine {
         System.out.println("Thank you.");
         
         Turtle turtle = new Turtle();
+        turtle.jump(0, 0);
         for (int i = 0; i < 4; i++) {
             turtle.forward(100);
-            turtle.left(90);
+            turtle.arc(90, 10);
         }
 
 

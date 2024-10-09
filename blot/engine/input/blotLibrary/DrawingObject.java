@@ -44,4 +44,53 @@ public class DrawingObject extends ArrayList<ArrayList<Point>> {
     public ArrayList<Point> getLastPath() {
         return lastArrayList;
     }
+
+    /**
+     * Rescales and translates a drawing object to fit
+     * within a specified bounds.
+     * 
+     * @param left the bound's left x value
+     * @param bottom the bound's bottom y value
+     * @param right the bound's right x value
+     * @param top the bound's top y value
+     */
+    public void confine(double left, double bottom, double right, double top) {
+        double newWidth = right - left;
+        double newHeight = top - bottom;
+
+        double minLeft = Double.MAX_VALUE;
+        double maxRight = -Double.MAX_VALUE;
+        double minBottom = Double.MAX_VALUE;
+        double maxTop = -Double.MAX_VALUE;
+
+        for (ArrayList<Point> path : this) {
+            for (Point point : path) {
+                if (point.getX() < minLeft) {
+                    minLeft = point.getX();
+                } if (point.getX() > maxRight) {
+                    maxRight = point.getX();
+                } if (point.getY() < minBottom) {
+                    minBottom = point.getY();
+                } if (point.getY() > maxTop) {
+                    maxTop = point.getY();
+                }
+            }
+        }
+
+        double oldWidth = maxRight - minLeft;
+        double oldHeight = maxTop - minBottom;
+
+        double scaleX = newWidth / oldWidth;
+        double scaleY = newHeight / oldHeight;
+
+        Point oldCenter = new Point((minLeft + maxRight) / 2, (maxTop + minBottom) / 2);
+        Point center = new Point((left + right) / 2, (top + bottom) / 2);
+
+        for (ArrayList<Point> path : this) {
+            for (Point point : path) {
+                point.translate(center.getX(), center.getY(), oldCenter.getX(), oldCenter.getY());
+                point.scale(scaleX, scaleY, center.getX(), center.getY());
+            }
+        }
+    }
 }

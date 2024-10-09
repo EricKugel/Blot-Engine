@@ -4,10 +4,10 @@ package blot.engine.input.blotLibrary;
  * Basic class for storing blot coords. Includes point transformation functions as well.
  */
 public class Point {
-    private float x;
-    private float y;
+    private double x;
+    private double y;
 
-    public Point(float x, float y) {
+    public Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -22,19 +22,19 @@ public class Point {
         return new Point(this.x, this.y);
     }
 
-    public void setX(float x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public void setY(float y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    public float getX() {
+    public double getX() {
         return this.x;
     }
 
-    public float getY() {
+    public double getY() {
         return this.y;
     }
 
@@ -46,7 +46,7 @@ public class Point {
      * @param originX the x coordinate of the transformation's origin.
      * @param originY the y coordinate of the transformation's origin.
      */
-    public void translate(float dx, float dy, float originX, float originY) {
+    public void translate(double dx, double dy, double originX, double originY) {
         this.setX(this.x + dx - originX);
         this.setY(this.y + dy - originY);
     }
@@ -58,14 +58,14 @@ public class Point {
      * @param originX the x coordinate of the transformation's origin.
      * @param originY the y coordinate of the transformation's origin.
      */
-    public void rotate(double angle, float originX, float originY) {
+    public void rotate(double angle, double originX, double originY) {
         angle = angle / 180 * Math.PI;
 
-        float hereX = this.x - originX;
-        float hereY = this.y - originY;
+        double hereX = this.x - originX;
+        double hereY = this.y - originY;
 
-        this.setX((float) (hereX * Math.cos(angle) - hereY * Math.sin(angle) + originX));
-        this.setY((float) (hereY * Math.cos(angle) + hereX * Math.sin(angle) + originY));
+        this.setX((double) (hereX * Math.cos(angle) - hereY * Math.sin(angle) + originX));
+        this.setY((double) (hereY * Math.cos(angle) + hereX * Math.sin(angle) + originY));
     }
 
     /**
@@ -76,7 +76,7 @@ public class Point {
      * @param originX the x coordinate of the transformation's origin.
      * @param originY the y coordinate of the transformation's origin.
      */
-    public void scale(float factorX, float factorY, float originX, float originY) {
+    public void scale(double factorX, double factorY, double originX, double originY) {
         setX((this.x - originX) * factorX + originX);
         setY((this.y - originY) * factorY + originY);
     }

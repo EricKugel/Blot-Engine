@@ -144,8 +144,8 @@ public class Communicator implements SerialPortMessageListener {
         return new Message("servo", bytes, 0);
     }
 
-    public static Message goTo(float x, float y) throws Exception {
-        byte[] bytes = floatsToBytes(new float[] {x, y});
+    public static Message goTo(double x, double y) throws Exception {
+        byte[] bytes = floatsToBytes(new double[] {x, y});
         return new Message("go", bytes, 0);
     }
 
@@ -162,9 +162,10 @@ public class Communicator implements SerialPortMessageListener {
         return output.toByteArray();
     }
 
-    public static byte[] floatsToBytes(float[] array) throws Exception {
+    public static byte[] floatsToBytes(double[] array) throws Exception {
         ByteArrayOutputStream output = new ByteArrayOutputStream(4 * array.length);
-        for (float f : array) {
+        for (double d : array) {
+            float f = (float) d;
             byte[] buffer = new byte[4];
             int intBits = Float.floatToIntBits(f);
             buffer[0] = (byte) intBits;
@@ -249,12 +250,12 @@ public class Communicator implements SerialPortMessageListener {
                     Communicator com = new Communicator();
                     com.queue.add(new Message("setOrigin", new byte[] {}, 0));
                     com.queue.add(new Message("motorsOn", new byte[] {}, 0));
-                    com.queue.add(goTo(25f, 25f));
+                    com.queue.add(goTo(25, 25));
                     com.queue.add(servo(1700));
-                    com.queue.add(goTo(25f, 100f));
-                    com.queue.add(goTo(100f, 100f));
-                    com.queue.add(goTo(100, 25f));
-                    com.queue.add(goTo(25f, 25f));
+                    com.queue.add(goTo(25, 100));
+                    com.queue.add(goTo(100, 100));
+                    com.queue.add(goTo(100, 25));
+                    com.queue.add(goTo(25, 25));
                     com.queue.add(new Message("motorsOff", new byte[] {}, 0));
                     com.queue.add(servo(1000));
                     com.flushQueue();

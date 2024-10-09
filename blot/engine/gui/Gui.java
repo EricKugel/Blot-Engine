@@ -9,7 +9,7 @@ import blot.engine.processing.Canvas;
 public class Gui extends JFrame {
     private Canvas canvas = new Canvas(this);
 
-    private static final int CANVAS_SIZE = 600;
+    public static final int CANVAS_SIZE = 600;
 
     public Gui() {
         setTitle("Blot Engine");
