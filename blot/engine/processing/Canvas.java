@@ -24,14 +24,29 @@ public class Canvas extends JPanel {
     public Canvas() {
         this.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                // e.get
+                int x = e.getX();
+                int y = e.getY();
+
+                for (Knob knob : getFocusedCanvasObject().getKnobs()) {
+                    if (knob.contains(new Point(x, y))) {
+                        getFocusedCanvasObject().press(knob);
+                    }
+                }
+                repaint();
             }
             public void mouseReleased(MouseEvent e) {
                 focusedCanvasObject.unpress();
+                repaint();
             }
         });
         this.addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+                if (focusedCanvasObject.getPressedKnob() != null) {
+                    focusedCanvasObject.getPressedKnob().drag(new Point(x, y));
+                }
+                repaint();
             }
             public void mouseMoved(MouseEvent e) {
                 int x = e.getX();
@@ -57,6 +72,10 @@ public class Canvas extends JPanel {
         return new Point(point.getX() * (Gui.CANVAS_SIZE / WIDTH), Gui.CANVAS_SIZE - point.getY() * (Gui.CANVAS_SIZE / HEIGHT));
     }
 
+    public static Point transformFromCanvas(Point point) {
+        return new Point(point.getX() / (Gui.CANVAS_SIZE / WIDTH), (Gui.CANVAS_SIZE - point.getY()) / (Gui.CANVAS_SIZE / HEIGHT));
+    }
+
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(Gui.CANVAS_SIZE, Gui.CANVAS_SIZE);
@@ -64,6 +83,7 @@ public class Canvas extends JPanel {
 
     @Override
     public void paintComponent(Graphics g) {
+        g.clearRect(0, 0, Gui.CANVAS_SIZE, Gui.CANVAS_SIZE);
         for (CanvasObject canvasObject : this.canvasObjects) {
             g.setColor(Color.BLACK);
             canvasObject.draw(g);

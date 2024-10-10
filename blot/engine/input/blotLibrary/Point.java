@@ -22,6 +22,18 @@ public class Point {
         return new Point(this.x, this.y);
     }
 
+    public static Point sub(Point point1, Point point2) {
+        return new Point(point1.getX() - point2.getX(), point1.getY() - point2.getY());
+    }
+
+    public static Point add(Point point1, Point point2) {
+        return new Point(point1.getX() + point2.getX(), point1.getY() + point2.getY());
+    }
+
+    public static Point mult(Point point, double scalar) {
+        return new Point(point.getX() * scalar, point.getY() * scalar);
+    }
+
     public void setX(double x) {
         this.x = x;
     }
