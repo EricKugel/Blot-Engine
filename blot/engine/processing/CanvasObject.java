@@ -1,6 +1,5 @@
 package blot.engine.processing;
 
-import blot.engine.gui.Gui;
 import blot.engine.input.blotLibrary.DrawingObject;
 import blot.engine.input.blotLibrary.Point;
 
@@ -18,18 +17,46 @@ public class CanvasObject {
     private double scaleX;
     private double scaleY;
 
+    private double width;
+    private double height;
+
+    private boolean isFocused = false;
+    private Knob pressedKnob = null;
+
+    private Knob[] knobs = Knob.generateKnobs(this);
+
     public CanvasObject(DrawingObject drawingObject) {
         this.drawingObject = drawingObject;
         this.position = new Point(Canvas.WIDTH / 2, Canvas.HEIGHT / 2);
         this.rotation = 0;
         this.scaleX = 1;
         this.scaleY = 1;
+
+        double minLeft = Double.MAX_VALUE;
+        double maxRight = -Double.MAX_VALUE;
+        double minBottom = Double.MAX_VALUE;
+        double maxTop = -Double.MAX_VALUE;
+
+        for (ArrayList<Point> path : drawingObject) {
+            for (Point point : path) {
+                if (point.getX() < minLeft) {
+                    minLeft = point.getX();
+                } if (point.getX() > maxRight) {
+                    maxRight = point.getX();
+                } if (point.getY() < minBottom) {
+                    minBottom = point.getY();
+                } if (point.getY() > maxTop) {
+                    maxTop = point.getY();
+                }
+            }
+        }
+
+        this.width = maxRight - minLeft;
+        this.height = maxTop - minBottom;
     }
 
     public void draw(Graphics g) {
-        Rectangle bounds = g.getClipBounds();
-        double width = bounds.getWidth();
-        double height = bounds.getHeight();
+        g.setColor(Color.BLACK);
         for (ArrayList<Point> path : this.drawingObject) {
             ArrayList<Point> transformedPath = new ArrayList<Point>();
             for (int i = 0; i < path.size(); i++) {
@@ -44,13 +71,38 @@ public class CanvasObject {
             for (int i = 0; i < transformedPath.size() - 1; i++) {
                 Point start = transformedPath.get(i);
                 Point end = transformedPath.get(i + 1);
+                start = Canvas.transformToCanvas(start);
+                end = Canvas.transformToCanvas(end);
                 g.drawLine(
-                    (int) (start.getX() / Canvas.WIDTH * width), 
-                    (int) (height - (start.getY() / Canvas.HEIGHT * height)), 
-                    (int) (end.getX() / Canvas.WIDTH * width), 
-                    (int) (height - (end.getY() / Canvas.HEIGHT * height)));
+                    (int) start.getX(),
+                    (int) start.getY(),
+                    (int) end.getX(),
+                    (int) end.getY()
+                );
             }
         }
+
+        if (this.isFocused()) {
+            Knob[] knobs = Knob.generateKnobs(this);
+            for (Knob knob : knobs) {
+                knob.draw(g);
+            }
+        }
+    }
+
+    public void press(Knob knob) {
+        if (this.pressedKnob != null) {
+            this.pressedKnob.setPressed(false);
+        }
+        this.pressedKnob = knob;
+        knob.setPressed(true);
+    }
+
+    public void unpress() {
+        if (this.pressedKnob != null) {
+            this.pressedKnob.setPressed(false);
+        }
+        this.pressedKnob = null;
     }
 
     public DrawingObject getDrawingObject() {
@@ -87,5 +139,28 @@ public class CanvasObject {
 
     public void setScaleY(double scaleY) {
         this.scaleY = scaleY;
+    }
+
+    public void setFocused(boolean isFocused) {
+        if (!isFocused) {
+            this.unpress();
+        }
+        this.isFocused = isFocused;
+    }
+
+    public boolean isFocused() {
+        return this.isFocused;
+    }
+
+    public double getWidth() {
+        return this.width;
+    }
+
+    public double getHeight() {
+        return this.height;
+    }
+
+    public Knob[] getKnobs() {
+        return this.knobs;
     }
 }

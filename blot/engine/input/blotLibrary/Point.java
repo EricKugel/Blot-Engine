@@ -59,7 +59,7 @@ public class Point {
      * @param originY the y coordinate of the transformation's origin.
      */
     public void rotate(double angle, double originX, double originY) {
-        angle = angle / 180 * Math.PI;
+        angle = Math.toRadians(angle);
 
         double hereX = this.x - originX;
         double hereY = this.y - originY;

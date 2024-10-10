@@ -7,8 +7,7 @@ import javax.swing.*;
 import blot.engine.processing.Canvas;
 
 public class Gui extends JFrame {
-    private Canvas canvas = new Canvas(this);
-
+    private Canvas canvas = new Canvas();
     public static final int CANVAS_SIZE = 600;
 
     public Gui() {
@@ -25,13 +24,6 @@ public class Gui extends JFrame {
     }
 
     private void initGUI() {
-        JPanel main = new JPanel() {
-            @Override
-            public void paintComponent(Graphics g) {
-                canvas.draw(g);
-            };
-        };
-        main.setPreferredSize(new Dimension(CANVAS_SIZE, CANVAS_SIZE));
-        setContentPane(main);
+        setContentPane(canvas);
     }
 }
