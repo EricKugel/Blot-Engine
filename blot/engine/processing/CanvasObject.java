@@ -83,7 +83,6 @@ public class CanvasObject {
         }
 
         if (this.isFocused()) {
-            Knob[] knobs = Knob.generateKnobs(this);
             for (Knob knob : knobs) {
                 knob.draw(g);
             }
