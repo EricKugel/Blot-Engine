@@ -18,20 +18,22 @@ public class Main {
         TransformationTelevision engine = new TransformationTelevision();
         DrawingObject drawingObject = engine.run(null);
         DrawingObject drawingObject1 = engine.run(null);
-        CanvasObject canvasObject = new CanvasObject(drawingObject);
+        CanvasObject canvasObject = new CanvasObject(drawingObject, engine.getName());
         CanvasObject canvasObject1 = new CanvasObject(drawingObject1);
 
         canvasObject.setScaleX(0.5);
         canvasObject.setScaleY(0.5);
         canvasObject.setRotation(15);
-        // canvasObject1.setScaleY(0.5);
-        // canvasObject.setPosition(new Point(50, 25));
-        // canvasObject1.setPosition(new Point(50, 75));
+        canvasObject1.setScaleY(0.5);
+        canvasObject.setPosition(new Point(50, 25));
+        canvasObject1.setPosition(new Point(50, 75));
 
         Gui gui = new Gui();
         gui.getCanvas().add(canvasObject);
+        gui.getCanvas().add(canvasObject1);
         gui.getCanvas().focus(canvasObject);
         gui.repaint();
+        gui.refreshCanvasObjectList();
         // gui.getCanvas().add(canvasObject1);
     }
 }

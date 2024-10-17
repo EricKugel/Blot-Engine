@@ -7,7 +7,6 @@ import java.awt.Graphics;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import blot.engine.gui.Gui;
@@ -21,21 +20,30 @@ public class Canvas extends JPanel {
     private ArrayList<CanvasObject> canvasObjects = new ArrayList<CanvasObject>();
     private CanvasObject focusedCanvasObject = null;
 
-    public Canvas() {
+    private boolean isShiftPressed = false;
+
+    private Gui gui;
+
+    public Canvas(Gui gui) {
+        this.gui = gui;
         this.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 int x = e.getX();
                 int y = e.getY();
 
-                for (Knob knob : getFocusedCanvasObject().getKnobs()) {
-                    if (knob.contains(new Point(x, y))) {
-                        getFocusedCanvasObject().press(knob);
+                if (focusedCanvasObject != null) {
+                    for (Knob knob : focusedCanvasObject.getKnobs()) {
+                        if (knob.contains(new Point(x, y))) {
+                            focusedCanvasObject.press(knob);
+                        }
                     }
+                    repaint();
                 }
-                repaint();
             }
             public void mouseReleased(MouseEvent e) {
-                focusedCanvasObject.unpress();
+                if (focusedCanvasObject != null) {
+                    focusedCanvasObject.unpress();
+                }
                 repaint();
             }
         });
@@ -43,19 +51,24 @@ public class Canvas extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 int x = e.getX();
                 int y = e.getY();
-                if (focusedCanvasObject.getPressedKnob() != null) {
-                    focusedCanvasObject.getPressedKnob().drag(new Point(x, y));
+                if (focusedCanvasObject != null && focusedCanvasObject.getPressedKnob() != null) {
+                    focusedCanvasObject.getPressedKnob().drag(new Point(x, y), isShiftPressed);
                 }
                 repaint();
             }
             public void mouseMoved(MouseEvent e) {
+                // it kept randomly losing focus so I'm just gonna do this...
+                requestFocus();
+
                 int x = e.getX();
                 int y = e.getY();
 
                 boolean hovering = false;
-                for (Knob knob : getFocusedCanvasObject().getKnobs()) {
-                    if (knob.contains(new Point(x, y))) {
-                        hovering = true;
+                if (focusedCanvasObject != null) {
+                    for (Knob knob : focusedCanvasObject.getKnobs()) {
+                        if (knob.contains(new Point(x, y))) {
+                            hovering = true;
+                        }
                     }
                 }
 
@@ -64,6 +77,21 @@ public class Canvas extends JPanel {
                 } else {
                     setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 }
+            }
+        });
+        this.addKeyListener(new KeyListener() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+                    isShiftPressed = true;
+                }
+            }
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+                    isShiftPressed = false;
+                }
+            }
+            public void keyTyped(KeyEvent e) {
+                
             }
         });
     }
@@ -85,8 +113,12 @@ public class Canvas extends JPanel {
     public void paintComponent(Graphics g) {
         g.clearRect(0, 0, Gui.CANVAS_SIZE, Gui.CANVAS_SIZE);
         for (CanvasObject canvasObject : this.canvasObjects) {
-            g.setColor(Color.BLACK);
-            canvasObject.draw(g);
+            if (!canvasObject.isFocused()) {
+                canvasObject.draw(g);
+            }
+        }
+        if (focusedCanvasObject != null) {
+            focusedCanvasObject.draw(g);
         }
     }
 
@@ -117,5 +149,18 @@ public class Canvas extends JPanel {
 
     public CanvasObject getFocusedCanvasObject() {
         return this.focusedCanvasObject;
+    }
+
+    public ArrayList<CanvasObject> getCanvasObjects() {
+        return canvasObjects;
+    }
+
+    public void delete(CanvasObject canvasObject) {
+        canvasObjects.remove(canvasObject);
+        if (this.focusedCanvasObject == canvasObject) {
+            unfocus();
+        }
+        gui.refreshCanvasObjectList();
+        repaint();
     }
 }

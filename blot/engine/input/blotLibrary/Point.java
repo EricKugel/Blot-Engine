@@ -22,6 +22,7 @@ public class Point {
         return new Point(this.x, this.y);
     }
 
+    // The following up to and including dot are vector operations
     public static Point sub(Point point1, Point point2) {
         return new Point(point1.getX() - point2.getX(), point1.getY() - point2.getY());
     }
@@ -32,6 +33,18 @@ public class Point {
 
     public static Point mult(Point point, double scalar) {
         return new Point(point.getX() * scalar, point.getY() * scalar);
+    }
+
+    public static double magnitude(Point point) {
+        return Math.hypot(point.getX(), point.getY());
+    }
+
+    public static Point direction(Point point) {
+        return mult(point, 1 / magnitude(point));
+    }
+
+    public static double dot(Point point1, Point point2) {
+        return point1.getX() * point2.getX() + point1.getY() * point2.getY();
     }
 
     public void setX(double x) {

@@ -11,6 +11,7 @@ import java.util.ArrayList;
  * Includes the center position, the rotation, and the scaling.
  */
 public class CanvasObject {
+    private static int totalObjects = 0;
     private DrawingObject drawingObject;
     private Point position;
     private double rotation;
@@ -22,8 +23,9 @@ public class CanvasObject {
 
     private boolean isFocused = false;
     private Knob pressedKnob = null;
-
     private Knob[] knobs = Knob.generateKnobs(this);
+
+    private String name;
 
     public CanvasObject(DrawingObject drawingObject) {
         this.drawingObject = drawingObject;
@@ -53,6 +55,18 @@ public class CanvasObject {
 
         this.width = maxRight - minLeft;
         this.height = maxTop - minBottom;
+
+        totalObjects += 1;
+        this.setName("Canvas Object " + totalObjects);
+    }
+
+    public CanvasObject(DrawingObject drawingObject, String name) {
+        this(drawingObject);
+        this.name = name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void draw(Graphics g) {
@@ -187,5 +201,9 @@ public class CanvasObject {
 
     public Knob getPressedKnob() {
         return this.pressedKnob;
+    }
+
+    public String getName() {
+        return this.name;
     }
 }

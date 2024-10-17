@@ -6,14 +6,14 @@ import java.awt.Graphics;
 import blot.engine.input.blotLibrary.Point;
 
 public class Knob extends Point {
-    public static final int LEFT_BOTTOM = 0;
-    public static final int LEFT_CENTER = 1;
-    public static final int LEFT_TOP = 2;
-    public static final int CENTER_TOP = 3;
-    public static final int CENTER_BOTTOM = 4;
-    public static final int RIGHT_BOTTOM = 5;
-    public static final int RIGHT_CENTER = 6;
-    public static final int RIGHT_TOP = 7;
+    public static final int RIGHT_TOP = 0;
+    public static final int RIGHT_CENTER = 1;
+    public static final int RIGHT_BOTTOM = 2;
+    public static final int CENTER_BOTTOM = 3;
+    public static final int LEFT_BOTTOM = 4;
+    public static final int LEFT_CENTER = 5;
+    public static final int LEFT_TOP = 6;
+    public static final int CENTER_TOP = 7;
     public static final int ROTATOR = 8;
     public static final int CENTER_CENTER = 9;
 
@@ -108,72 +108,50 @@ public class Knob extends Point {
      * 
      * @param point
      */
-    public void drag(Point point) {
+    public void drag(Point point, boolean isShiftPressed) {
         Point difference = Point.sub(Canvas.transformFromCanvas(point), Canvas.transformFromCanvas(renderPoint));
+
+        // if shift pressed and on a diagonal, project the difference onto the diagonal...
+        // I feel like a genius
+        if ((this.type == LEFT_TOP || this.type == RIGHT_TOP ||
+             this.type == LEFT_BOTTOM || this.type == RIGHT_BOTTOM) && isShiftPressed) {
+            Point goodDifference = Point.sub(Canvas.transformFromCanvas(renderPoint), canvasObject.getPosition());
+            goodDifference = Point.direction(goodDifference);
+            difference = Point.mult(goodDifference, Point.dot(difference, goodDifference));
+        }
+
         difference.rotate(-canvasObject.getRotation(), 0, 0);
 
-        switch (this.type) {
-            case LEFT_BOTTOM:
-                canvasObject.setScaleX((canvasObject.getWidth() * canvasObject.getScaleX() - difference.getX()) / canvasObject.getWidth());
-                canvasObject.setScaleY((canvasObject.getHeight() * canvasObject.getScaleY() - difference.getY()) / canvasObject.getHeight());
-                difference.rotate(canvasObject.getRotation(), 0, 0);
-                canvasObject.setPosition(new Point(canvasObject.getPosition().getX() + difference.getX() / 2, canvasObject.getPosition().getY() + difference.getY() / 2));
-                break;
-            case LEFT_CENTER:
-                canvasObject.setScaleX((canvasObject.getWidth() * canvasObject.getScaleX() - difference.getX()) / canvasObject.getWidth());
-                difference.setY(0);
-                difference.rotate(canvasObject.getRotation(), 0, 0);
-                canvasObject.setPosition(new Point(canvasObject.getPosition().getX() + difference.getX() / 2, canvasObject.getPosition().getY() + difference.getY() / 2));
-                break;
-            case LEFT_TOP:
-                canvasObject.setScaleX((canvasObject.getWidth() * canvasObject.getScaleX() - difference.getX()) / canvasObject.getWidth());
-                canvasObject.setScaleY((canvasObject.getHeight() * canvasObject.getScaleY() + difference.getY()) / canvasObject.getHeight());
-                difference.rotate(canvasObject.getRotation(), 0, 0);
-                canvasObject.setPosition(new Point(canvasObject.getPosition().getX() + difference.getX() / 2, canvasObject.getPosition().getY() + difference.getY() / 2));
-                break;
-            case CENTER_BOTTOM:
-                canvasObject.setScaleY((canvasObject.getHeight() * canvasObject.getScaleY() - difference.getY()) / canvasObject.getHeight());
-                difference.setX(0);
-                difference.rotate(canvasObject.getRotation(), 0, 0);
-                canvasObject.setPosition(new Point(canvasObject.getPosition().getX() + difference.getX() / 2, canvasObject.getPosition().getY() + difference.getY() / 2));
-                break;
-            case CENTER_TOP:
-                canvasObject.setScaleY((canvasObject.getHeight() * canvasObject.getScaleY() + difference.getY()) / canvasObject.getHeight());
-                difference.setX(0);
-                difference.rotate(canvasObject.getRotation(), 0, 0);
-                canvasObject.setPosition(new Point(canvasObject.getPosition().getX() + difference.getX() / 2, canvasObject.getPosition().getY() + difference.getY() / 2));
-                break;
-            case RIGHT_BOTTOM:
-                canvasObject.setScaleX((canvasObject.getWidth() * canvasObject.getScaleX() + difference.getX()) / canvasObject.getWidth());
-                canvasObject.setScaleY((canvasObject.getHeight() * canvasObject.getScaleY() - difference.getY()) / canvasObject.getHeight());
-                difference.rotate(canvasObject.getRotation(), 0, 0);
-                canvasObject.setPosition(new Point(canvasObject.getPosition().getX() + difference.getX() / 2, canvasObject.getPosition().getY() + difference.getY() / 2));
-                break;
-            case RIGHT_CENTER:
-                canvasObject.setScaleX((canvasObject.getWidth() * canvasObject.getScaleX() + difference.getX()) / canvasObject.getWidth());
-                difference.setY(0);
-                difference.rotate(canvasObject.getRotation(), 0, 0);
-                canvasObject.setPosition(new Point(canvasObject.getPosition().getX() + difference.getX() / 2, canvasObject.getPosition().getY() + difference.getY() / 2));
-                break;
-            case RIGHT_TOP:
-                canvasObject.setScaleX((canvasObject.getWidth() * canvasObject.getScaleX() + difference.getX()) / canvasObject.getWidth());
-                canvasObject.setScaleY((canvasObject.getHeight() * canvasObject.getScaleY() + difference.getY()) / canvasObject.getHeight());
-                difference.rotate(canvasObject.getRotation(), 0, 0);
-                canvasObject.setPosition(new Point(canvasObject.getPosition().getX() + difference.getX() / 2, canvasObject.getPosition().getY() + difference.getY() / 2));
-                break;
-            case CENTER_CENTER:
-                canvasObject.setPosition(new Point(canvasObject.getPosition().getX() + difference.getX(), canvasObject.getPosition().getY() + difference.getY()));
-                break;
-            case ROTATOR:
-                Point vector = Point.sub(Canvas.transformFromCanvas(point), canvasObject.getPosition());
-                double angle = 0;
-                if (vector.getX() == 0) {
-                    angle = vector.getY() > 0 ? 90 : 270;
-                } else {
-                    angle = Math.toDegrees(Math.atan(vector.getY() / vector.getX())) + (vector.getX() < 0 ? 180 : 0);
-                }
-                canvasObject.setRotation(angle - 90);
-                break;
+        if (this.type < 8) {
+            Point widthDifference = difference.clone();
+            if (4 <= this.type && this.type < 7) { // left
+                widthDifference.setX(-widthDifference.getX());
+            } if (2 <= this.type && this.type < 5) { // bottom
+                widthDifference.setY(-widthDifference.getY());
+            }
+
+            double newScaleX = (canvasObject.getWidth() * canvasObject.getScaleX() + widthDifference.getX()) / canvasObject.getWidth();
+            double newScaleY = (canvasObject.getHeight() * canvasObject.getScaleY() + widthDifference.getY()) / canvasObject.getHeight();
+        
+            if (!(this.type == CENTER_TOP || this.type == CENTER_BOTTOM)) canvasObject.setScaleX(newScaleX);
+            if (!(this.type == LEFT_CENTER || this.type == RIGHT_CENTER)) canvasObject.setScaleY(newScaleY);
+
+            if (this.type == LEFT_CENTER || this.type == RIGHT_CENTER) difference.setY(0);
+            if (this.type == CENTER_TOP || this.type == CENTER_BOTTOM) difference.setX(0);
+            difference.rotate(canvasObject.getRotation(), 0, 0);
+            canvasObject.setPosition(new Point(canvasObject.getPosition().getX() + difference.getX() / 2, canvasObject.getPosition().getY() + difference.getY() / 2));
+        } else if (this.type == ROTATOR) {
+            Point vector = Point.sub(Canvas.transformFromCanvas(point), canvasObject.getPosition());
+            double angle = 0;
+            if (vector.getX() == 0) {
+                angle = vector.getY() > 0 ? 90 : 270;
+            } else {
+                angle = Math.toDegrees(Math.atan(vector.getY() / vector.getX())) + (vector.getX() < 0 ? 180 : 0);
+            }
+            canvasObject.setRotation(angle - 90 + (canvasObject.getScaleY() < 0 ? 180 : 0));
+        } else if (this.type == CENTER_CENTER) {
+            difference.rotate(canvasObject.getRotation(), 0, 0);
+            canvasObject.setPosition(new Point(canvasObject.getPosition().getX() + difference.getX(), canvasObject.getPosition().getY() + difference.getY()));
         }
     }
 

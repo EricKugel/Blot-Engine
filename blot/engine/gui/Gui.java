@@ -1,14 +1,19 @@
 package blot.engine.gui;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
 import blot.engine.processing.Canvas;
+import blot.engine.processing.CanvasObject;
 
 public class Gui extends JFrame {
-    private Canvas canvas = new Canvas();
+    private Canvas canvas = new Canvas(this);
     public static final int CANVAS_SIZE = 600;
+
+    private JPanel sidebar = new JPanel();
 
     public Gui() {
         setTitle("Blot Engine");
@@ -24,6 +29,22 @@ public class Gui extends JFrame {
     }
 
     private void initGUI() {
-        setContentPane(canvas);
+        add(canvas, BorderLayout.CENTER);
+
+        add(sidebar, BorderLayout.EAST);
+
+        canvas.requestFocus();
+    }
+
+    public void refreshCanvasObjectList() {
+        sidebar.removeAll();
+        sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.PAGE_AXIS));
+        for (CanvasObject canvasObject : this.canvas.getCanvasObjects()) {
+            SidebarObject sidebarObject = new SidebarObject(canvasObject, canvas);
+            sidebar.add(sidebarObject);
+        }
+        add(sidebar, BorderLayout.EAST);
+        sidebar.repaint();
+        pack();
     }
 }
