@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+import blot.engine.input.blotLibrary.DrawingObject;
 import blot.engine.processing.Canvas;
 import blot.engine.processing.CanvasObject;
 
@@ -32,8 +33,27 @@ public class Gui extends JFrame {
         add(canvas, BorderLayout.CENTER);
 
         add(sidebar, BorderLayout.EAST);
+        
+        JButton process = new JButton("Process");
+        process.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                processCanvas();
+            }
+        });
+        add(process, BorderLayout.SOUTH);
 
         canvas.requestFocus();
+    }
+
+    private void processCanvas() {
+        DrawingObject output = canvas.process();
+
+        
+
+        canvas.clear();
+        if (output != null) {
+            canvas.add(output);
+        }
     }
 
     public void refreshCanvasObjectList() {

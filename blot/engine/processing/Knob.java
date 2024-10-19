@@ -17,7 +17,6 @@ public class Knob extends Point {
     public static final int ROTATOR = 8;
     public static final int CENTER_CENTER = 9;
 
-    private double rotation;
     private int type;
     private CanvasObject canvasObject;
 

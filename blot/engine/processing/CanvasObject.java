@@ -29,32 +29,16 @@ public class CanvasObject {
 
     public CanvasObject(DrawingObject drawingObject) {
         this.drawingObject = drawingObject;
-        this.position = new Point(Canvas.WIDTH / 2, Canvas.HEIGHT / 2);
         this.rotation = 0;
         this.scaleX = 1;
         this.scaleY = 1;
 
-        double minLeft = Double.MAX_VALUE;
-        double maxRight = -Double.MAX_VALUE;
-        double minBottom = Double.MAX_VALUE;
-        double maxTop = -Double.MAX_VALUE;
+        Point[] bounds = drawingObject.getBounds();
+        this.width = bounds[1].getX();
+        this.height = bounds[1].getY();
 
-        for (ArrayList<Point> path : drawingObject) {
-            for (Point point : path) {
-                if (point.getX() < minLeft) {
-                    minLeft = point.getX();
-                } if (point.getX() > maxRight) {
-                    maxRight = point.getX();
-                } if (point.getY() < minBottom) {
-                    minBottom = point.getY();
-                } if (point.getY() > maxTop) {
-                    maxTop = point.getY();
-                }
-            }
-        }
-
-        this.width = maxRight - minLeft;
-        this.height = maxTop - minBottom;
+        this.position = Point.add(bounds[0], Point.mult(bounds[1], 0.5));
+        drawingObject.setOrigin(this.position);
 
         totalObjects += 1;
         this.setName("Canvas Object " + totalObjects);
@@ -71,7 +55,7 @@ public class CanvasObject {
 
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
-        for (ArrayList<Point> path : this.drawingObject) {
+        for (ArrayList<Point> path : this.drawingObject.getPaths()) {
             ArrayList<Point> transformedPath = new ArrayList<Point>();
             for (int i = 0; i < path.size(); i++) {
                 Point point = path.get(i).clone();
@@ -104,22 +88,8 @@ public class CanvasObject {
             // Draw lines between all knobs except center_center
             g.setColor(Color.BLUE);
             for (int i = 0; i < knobs.length - 2; i++) {
-                Point difference = Point.sub(knobs[i + 1].getRenderPoint(), knobs[i].getRenderPoint());
-                // Point midPoint1 = Point.add(knobs[i].getRenderPoint(), Point.mult(difference, 0.2));
-                // Point midPoint2 = Point.sub(knobs[i + 1].getRenderPoint(), Point.mult(difference, .2));
                 g.drawLine((int) knobs[i].getRenderPoint().getX(), (int) knobs[i].getRenderPoint().getY(), (int) knobs[i + 1].getRenderPoint().getX(), (int) knobs[i + 1].getRenderPoint().getY());
-                
-                // g.drawLine((int) knobs[i].getRenderPoint().getX(), (int) knobs[i].getRenderPoint().getY(), (int) midPoint1.getX(), (int) midPoint2.getY());
-                // g.drawLine((int) midPoint2.getX(), (int) midPoint2.getY(), (int) knobs[i + 1].getRenderPoint().getX(), (int) knobs[i + 1].getRenderPoint().getY());
-
-                // g.drawLine((int) knobs[i + 1].getRenderPoint().getX(), (int) knobs[i + 1].getRenderPoint().getY(), (int) midPoint2.getX(), (int) midPoint2.getY());
             }
-
-            Point difference = Point.sub(knobs[7].getRenderPoint(), knobs[0].getRenderPoint());
-            // Point midPoint1 = Point.add(knobs[0].getRenderPoint(), Point.mult(difference, 0.33));
-            // Point midPoint2 = Point.add(knobs[0].getRenderPoint(), Point.mult(difference, 0.66));
-            // g.drawLine((int) knobs[0].getRenderPoint().getX(), (int) knobs[0].getRenderPoint().getY(), (int) midPoint1.getX(), (int) midPoint2.getY());
-            // g.drawLine((int) midPoint2.getX(), (int) midPoint2.getY(), (int) knobs[7].getRenderPoint().getX(), (int) knobs[7].getRenderPoint().getY());
             g.drawLine((int) knobs[0].getRenderPoint().getX(), (int) knobs[0].getRenderPoint().getY(), (int) knobs[6 + 1].getRenderPoint().getX(), (int) knobs[6 + 1].getRenderPoint().getY());
         
         }

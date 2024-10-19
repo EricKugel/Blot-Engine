@@ -2,6 +2,7 @@ package blot.engine.input;
 
 import java.util.HashMap;
 
+import blot.engine.input.blotLibrary.ConfinedDrawingObject;
 import blot.engine.input.blotLibrary.DrawingObject;
 
 /**
@@ -11,5 +12,5 @@ import blot.engine.input.blotLibrary.DrawingObject;
 public interface Engine {
     public ParameterUi getParameterUi();
     public String getName();
-    public DrawingObject run(HashMap<String, Object> parameters);
+    public ConfinedDrawingObject run(HashMap<String, Object> parameters);
 }

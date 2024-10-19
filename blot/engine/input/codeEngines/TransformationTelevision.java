@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import blot.engine.input.Engine;
 import blot.engine.input.ParameterUi;
+import blot.engine.input.blotLibrary.ConfinedDrawingObject;
 import blot.engine.input.blotLibrary.DrawingObject;
 import blot.engine.input.blotLibrary.Turtle;
 
@@ -22,7 +23,7 @@ public class TransformationTelevision implements Engine {
     }
 
     @Override
-    public DrawingObject run(HashMap<String, Object> parameters) {
+    public ConfinedDrawingObject run(HashMap<String, Object> parameters) {
         return transformationTelevision();
     }
 
@@ -39,7 +40,7 @@ public class TransformationTelevision implements Engine {
         }
     }
     
-    private DrawingObject transformationTelevision() {
+    private ConfinedDrawingObject transformationTelevision() {
         Turtle t = new Turtle();
         rect(-30, -27, 63, 36, 2, 0, t);
         rect(-27, -24, 39, 31, 1, 0, t);
@@ -64,8 +65,6 @@ public class TransformationTelevision implements Engine {
         rect(22, -37, 4, 9, 1, -28, t);
 
         DrawingObject drawingObject = t.getDrawingObject();
-        drawingObject.confine(0, 0, 100, 100);
-
-        return drawingObject;
+        return drawingObject.confine(0, 0, 100, 100);
     }
 }

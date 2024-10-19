@@ -134,7 +134,7 @@ public class Turtle {
             return;
         }
 
-        final int n = 64;
+        final int n = 256;
         ArrayList<Point> points = new ArrayList<Point>();
         angle = Math.toRadians(angle);
         

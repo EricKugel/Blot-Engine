@@ -1,13 +1,14 @@
 package blot.engine.processing;
 
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.MouseInfo;
 import java.awt.event.*;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import blot.engine.gui.Gui;
 import blot.engine.input.blotLibrary.DrawingObject;
@@ -26,6 +27,7 @@ public class Canvas extends JPanel {
 
     public Canvas(Gui gui) {
         this.gui = gui;
+        Canvas canvas = this;
         this.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 int x = e.getX();
@@ -88,6 +90,12 @@ public class Canvas extends JPanel {
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     isShiftPressed = false;
+                    if (focusedCanvasObject != null && focusedCanvasObject.getPressedKnob() != null) {
+                        java.awt.Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
+                        SwingUtilities.convertPointFromScreen(mouseLocation, canvas);
+                        focusedCanvasObject.getPressedKnob().drag(new Point(mouseLocation.getX(), mouseLocation.getY()), isShiftPressed);
+                        repaint();
+                    }
                 }
             }
             public void keyTyped(KeyEvent e) {
@@ -123,12 +131,12 @@ public class Canvas extends JPanel {
     }
 
     public void add(DrawingObject drawingObject) {
-        this.canvasObjects.add(new CanvasObject(drawingObject));
-        this.repaint();
+        this.add(new CanvasObject(drawingObject));
     }
 
     public void add(CanvasObject canvasObject) {
         this.canvasObjects.add(canvasObject);
+        gui.refreshCanvasObjectList();
         this.repaint();
     }
 
@@ -162,5 +170,36 @@ public class Canvas extends JPanel {
         }
         gui.refreshCanvasObjectList();
         repaint();
+    }
+
+    public DrawingObject process() {
+        if (canvasObjects.size() == 0)
+            return null;
+        
+        DrawingObject output = new DrawingObject();
+        for (CanvasObject canvasObject : canvasObjects) {
+            DrawingObject drawingObject = canvasObject.getDrawingObject();
+            Point position = canvasObject.getPosition();
+            double scaleX = canvasObject.getScaleX();
+            double scaleY = canvasObject.getScaleY();
+            double rotation = canvasObject.getRotation();
+
+            for (ArrayList<Point> path : drawingObject.clone().getPaths()) {
+                for (Point point : path) {
+                    point.translate(position.getX(), position.getY(), 50, 50);
+                    point.scale(scaleX, scaleY, position.getX(), position.getY());
+                    point.rotate(rotation, position.getX(), position.getY());
+                }
+                output.getPaths().add(path);
+            }
+        }
+        return output;
+    }
+
+    public void clear() {
+        Object[] canvasObjectsArray = canvasObjects.toArray();
+        for (Object canvasObject : canvasObjectsArray) {
+            delete((CanvasObject) canvasObject);
+        }
     }
 }

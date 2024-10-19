@@ -20,6 +20,7 @@ public class Main {
         DrawingObject drawingObject1 = engine.run(null);
         CanvasObject canvasObject = new CanvasObject(drawingObject, engine.getName());
         CanvasObject canvasObject1 = new CanvasObject(drawingObject1);
+        CanvasObject canvasObject2 = new CanvasObject(drawingObject1.clone(), "The big guy");
 
         canvasObject.setScaleX(0.5);
         canvasObject.setScaleY(0.5);
@@ -31,9 +32,9 @@ public class Main {
         Gui gui = new Gui();
         gui.getCanvas().add(canvasObject);
         gui.getCanvas().add(canvasObject1);
+        gui.getCanvas().add(canvasObject2);
         gui.getCanvas().focus(canvasObject);
         gui.repaint();
-        gui.refreshCanvasObjectList();
         // gui.getCanvas().add(canvasObject1);
     }
 }
