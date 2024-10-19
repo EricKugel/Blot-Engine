@@ -9,6 +9,10 @@ This is an engine to be used with [hackclub blot project](https://github.com/hac
  - Outputting to a more universal file type, such as gcode
 
 ## Current capabilities:
+ - Mimic Turtle python/Blot turtle
+ - Customizable parameter GUI for engines
+ - TransformationTelevision code engine
+ - Reordering, translating, rotating, and scaling drawingObjects on a canvas, output to a processed drawingObject
  - Connect to a Blot machine using jSerialComm and send simple move & pen instructions.
 
 Remember to add jSerialComm to the classpath before running.
