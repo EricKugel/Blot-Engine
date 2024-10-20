@@ -5,6 +5,9 @@ import java.awt.Graphics;
 
 import blot.engine.input.blotLibrary.Point;
 
+/**
+ * The things around an image in MS Paint that let you scale the image and stuff
+ */
 public class Knob extends Point {
     public static final int RIGHT_TOP = 0;
     public static final int RIGHT_CENTER = 1;
@@ -46,12 +49,25 @@ public class Knob extends Point {
         };
     }
 
+    /**
+     * Create a knob at the coordinates x, y (which are both -1 -> 1)
+     * 
+     * @param x The x coordinate, -1 to 1
+     * @param y The y coordinate, -1 to 1
+     * @param type The type of knob. Should be a Knob.RIGHT_TOP, Knob.CENTER_BOTTOM, etc
+     * @param canvasObject The parent canvasObject to scale and move and rotate
+     */
     public Knob(double x, double y, int type, CanvasObject canvasObject) {
         super(x, y);
         this.type = type;
         this.canvasObject = canvasObject;
     }
 
+    /**
+     * Draw a circle for everything except CENTER_CENTER -- draw a crosshairs
+     * 
+     * @param g The graphics to draw on
+     */
     public void draw(Graphics g) {
         g.setColor(this.isPressed ? Color.RED : Color.BLUE);
         
@@ -92,6 +108,12 @@ public class Knob extends Point {
         } 
     }
 
+    /**
+     * Helper function to see if the mouse is close
+     * 
+     * @param point The mouse location
+     * @return Am I here?
+     */
     public boolean contains(Point point) {
         int maxDistance = type == CENTER_CENTER ? 6 : 4;
         if (renderPoint != null) {
@@ -103,13 +125,15 @@ public class Knob extends Point {
 
     /**
      * If you ever need to debug this...
-     * The lord have mercy on your soul
+     * The lord have mercy on your soul.
      * 
-     * @param point
+     * Sending thoughts and prayers
+     * 
+     * @param point Where the knob was dragged to
+     * @param isShiftPressed Whether the shift button is pressed
      */
     public void drag(Point point, boolean isShiftPressed) {
         Point difference = Point.sub(Canvas.transformFromCanvas(point), Canvas.transformFromCanvas(renderPoint));
-
         // if shift pressed and on a diagonal, project the difference onto the diagonal...
         // I feel like a genius
         if ((this.type == LEFT_TOP || this.type == RIGHT_TOP ||

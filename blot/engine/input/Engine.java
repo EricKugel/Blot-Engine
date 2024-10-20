@@ -3,7 +3,6 @@ package blot.engine.input;
 import java.util.HashMap;
 
 import blot.engine.input.blotLibrary.ConfinedDrawingObject;
-import blot.engine.input.blotLibrary.DrawingObject;
 
 /**
  * All plugins/engines MUST implement engine. An engine defines its parameterui,
@@ -12,5 +11,11 @@ import blot.engine.input.blotLibrary.DrawingObject;
 public interface Engine {
     public ParameterUi getParameterUi();
     public String getName();
+    /**
+     * Remember to confine the drawingObject to the canvas after creation.
+     * 
+     * @param parameters
+     * @return
+     */
     public ConfinedDrawingObject run(HashMap<String, Object> parameters);
 }

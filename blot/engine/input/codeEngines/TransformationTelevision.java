@@ -10,6 +10,7 @@ import blot.engine.input.ParameterUi;
 import blot.engine.input.blotLibrary.ConfinedDrawingObject;
 import blot.engine.input.blotLibrary.DrawingObject;
 import blot.engine.input.blotLibrary.Turtle;
+import blot.engine.processing.Canvas;
 
 public class TransformationTelevision implements Engine {
     @Override
@@ -65,6 +66,6 @@ public class TransformationTelevision implements Engine {
         rect(22, -37, 4, 9, 1, -28, t);
 
         DrawingObject drawingObject = t.getDrawingObject();
-        return drawingObject.confine(0, 0, 100, 100);
+        return drawingObject.confine(0, 0, Canvas.WIDTH, Canvas.HEIGHT);
     }
 }

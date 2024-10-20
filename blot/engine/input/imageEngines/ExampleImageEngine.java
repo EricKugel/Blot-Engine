@@ -5,6 +5,8 @@ import java.util.HashMap;
 import blot.engine.input.Engine;
 import blot.engine.input.ParameterUi;
 import blot.engine.input.parameters.*;
+import blot.engine.processing.Canvas;
+import blot.engine.input.blotLibrary.ConfinedDrawingObject;
 import blot.engine.input.blotLibrary.DrawingObject;
 import blot.engine.input.blotLibrary.Turtle;
 
@@ -27,7 +29,7 @@ public class ExampleImageEngine implements Engine {
         return engineName;
     }
 
-    public DrawingObject run(HashMap<String, Object> parameters) {
+    public ConfinedDrawingObject run(HashMap<String, Object> parameters) {
         // WARNING: A set, not a list. May return in an order different than the parameters
         // were added to the ParameterUi.
         for (String key : parameters.keySet()) {
@@ -43,7 +45,6 @@ public class ExampleImageEngine implements Engine {
             turtle.arc(90, 10);
         }
 
-
-        return turtle.getDrawingObject();
+        return new ConfinedDrawingObject(turtle.getDrawingObject().confine(0, 0, Canvas.WIDTH, Canvas.HEIGHT));
     }
 }

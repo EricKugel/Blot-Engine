@@ -3,13 +3,15 @@ package blot.engine.input.blotLibrary;
 import java.util.ArrayList;
 
 /**
- * Mimicks the blot library's turtle, to ease rewriting.
+ * Mimicks the blot library's turtle, to ease rewriting engines.
  */
 public class Turtle {
     private boolean isDrawing = true;
     private Point position = new Point(0, 0);
     private double angle = 0;
     private DrawingObject drawingObject = new DrawingObject();
+
+    private int resolution = 64;
 
     /**
      * See https://github.com/hackclub/blot/blob/main/src/drawingToolkit/Turtle.js
@@ -24,6 +26,15 @@ public class Turtle {
 
     public void setAngle(double angle) {
         this.angle = angle;
+    }
+
+    /**
+     * Changes the resolution of arcs and bezier curves.
+     * 
+     * @param resolution Lines per arc/curve
+     */
+    public void setResolution(int resolution) {
+        this.resolution = resolution;
     }
 
     public Point getPosition() {
@@ -124,7 +135,7 @@ public class Turtle {
     }
 
     /**
-     * Draws an arc.
+     * Draws an arc. Change the resolution with Turtle.setResolution
      * 
      * @param angle how much of an arc in degrees (e.g. 360 = full circle, 180 = semicircle, etc)
      * @param radius the radius of the arc.
@@ -134,7 +145,7 @@ public class Turtle {
             return;
         }
 
-        final int n = 256;
+        int n = resolution;
         ArrayList<Point> points = new ArrayList<Point>();
         angle = Math.toRadians(angle);
         

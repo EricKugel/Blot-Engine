@@ -66,6 +66,11 @@ public class Point {
     /**
      * see https://github.com/hackclub/blot/blob/main/src/drawingToolkit/affineTransformations.js
      * 
+     * Honestly Leo McElroy is such a chad for these next three methods, it's shocking how many times I've
+     * ended up using them.
+     * 
+     * Bless up Leo 🙏🙏🙏🙏 I see you
+     * 
      * @param dx how much to shift x by.
      * @param dy how much to shift y by.
      * @param originX the x coordinate of the transformation's origin.

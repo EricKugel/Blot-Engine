@@ -14,6 +14,10 @@ import blot.engine.gui.Gui;
 import blot.engine.input.blotLibrary.DrawingObject;
 import blot.engine.input.blotLibrary.Point;
 
+/**
+ * Draws the drawingObjects on the screen as canvasObjects. Allows for these canvasObjects
+ * to be transformed/rearranged before processing to one drawingObject.
+ */
 public class Canvas extends JPanel {
     public static final double WIDTH = 100;
     public static final double HEIGHT = 100;
@@ -25,10 +29,18 @@ public class Canvas extends JPanel {
 
     private Gui gui;
 
+    /**
+     * Constructs a Canvas and its extended JPanel. Adds the mouse/keyboard listeners
+     * 
+     * @param gui The parent Gui, to allow for commands to be sent back up.
+     */
     public Canvas(Gui gui) {
         this.gui = gui;
         Canvas canvas = this;
         this.addMouseListener(new MouseAdapter() {
+            /**
+             * Check if we should be worried about the knob logic
+             */
             public void mousePressed(MouseEvent e) {
                 int x = e.getX();
                 int y = e.getY();
@@ -42,6 +54,9 @@ public class Canvas extends JPanel {
                     repaint();
                 }
             }
+            /**
+             * Let go!
+             */
             public void mouseReleased(MouseEvent e) {
                 if (focusedCanvasObject != null) {
                     focusedCanvasObject.unpress();
@@ -50,6 +65,11 @@ public class Canvas extends JPanel {
             }
         });
         this.addMouseMotionListener(new MouseMotionAdapter() {
+            /**
+             * Here we go...........
+             * 
+             * @param e The mouse event
+             */
             public void mouseDragged(MouseEvent e) {
                 int x = e.getX();
                 int y = e.getY();
@@ -58,6 +78,11 @@ public class Canvas extends JPanel {
                 }
                 repaint();
             }
+            /**
+             * All the professionals do this, I've been told
+             * 
+             * @param e
+             */
             public void mouseMoved(MouseEvent e) {
                 // it kept randomly losing focus so I'm just gonna do this...
                 requestFocus();
@@ -91,6 +116,7 @@ public class Canvas extends JPanel {
                 if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     isShiftPressed = false;
                     if (focusedCanvasObject != null && focusedCanvasObject.getPressedKnob() != null) {
+                        // Snap!
                         java.awt.Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
                         SwingUtilities.convertPointFromScreen(mouseLocation, canvas);
                         focusedCanvasObject.getPressedKnob().drag(new Point(mouseLocation.getX(), mouseLocation.getY()), isShiftPressed);
@@ -98,25 +124,41 @@ public class Canvas extends JPanel {
                     }
                 }
             }
-            public void keyTyped(KeyEvent e) {
-                
-            }
+            public void keyTyped(KeyEvent e) {}
         });
     }
 
+    /**
+     * Invert the y-component, scale to screen size
+     * 
+     * @param point The point in question
+     * @return A new point, transformed to the Canvas
+     */
     public static Point transformToCanvas(Point point) {
         return new Point(point.getX() * (Gui.CANVAS_SIZE / WIDTH), Gui.CANVAS_SIZE - point.getY() * (Gui.CANVAS_SIZE / HEIGHT));
     }
 
+    /**
+     * ezis neercs ot elacs ,tnenopmoc-y eht trevnI
+     * 
+     * @param point The point in question
+     * @return A new point, transformed back to our little imaginary world where everything makes sense
+     */
     public static Point transformFromCanvas(Point point) {
         return new Point(point.getX() / (Gui.CANVAS_SIZE / WIDTH), (Gui.CANVAS_SIZE - point.getY()) / (Gui.CANVAS_SIZE / HEIGHT));
     }
 
+    /**
+     * All the professionals do this, I've been told
+     */
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(Gui.CANVAS_SIZE, Gui.CANVAS_SIZE);
     }
 
+    /**
+     * Draw all the stuff!
+     */
     @Override
     public void paintComponent(Graphics g) {
         g.clearRect(0, 0, Gui.CANVAS_SIZE, Gui.CANVAS_SIZE);
@@ -130,16 +172,32 @@ public class Canvas extends JPanel {
         }
     }
 
+    /**
+     * Adds the drawingObject as a canvasObject and its button
+     * to the side bar.
+     * 
+     * @param drawingObject
+     */
     public void add(DrawingObject drawingObject) {
         this.add(new CanvasObject(drawingObject));
     }
 
+    /**
+     * Adds the canvasObject and its button to the sidebar.
+     * 
+     * @param canvasObject The canvasObject to add
+     */
     public void add(CanvasObject canvasObject) {
         this.canvasObjects.add(canvasObject);
         gui.refreshCanvasObjectList();
         this.repaint();
     }
 
+    /**
+     * Which canvasObject should have its knobs drawn?
+     * 
+     * @param canvasObject
+     */
     public void focus(CanvasObject canvasObject) {
         if (this.focusedCanvasObject != null) {
             this.focusedCanvasObject.setFocused(false);
@@ -148,6 +206,9 @@ public class Canvas extends JPanel {
         this.focusedCanvasObject = canvasObject;
     }
 
+    /**
+     * No canvasObject should have its knobs drawn.
+     */
     public void unfocus() {
         if (this.focusedCanvasObject != null) {
             this.focusedCanvasObject.setFocused(false);
@@ -155,14 +216,29 @@ public class Canvas extends JPanel {
         this.focusedCanvasObject = null;
     }
 
+    /**
+     * Which canvasObject has its knobs drawn?
+     * 
+     * @return The canvasObject which has its knobs drawn
+     */
     public CanvasObject getFocusedCanvasObject() {
         return this.focusedCanvasObject;
     }
 
+    /**
+     * All the canvasObjects
+     * 
+     * @return All the canvasObjects
+     */
     public ArrayList<CanvasObject> getCanvasObjects() {
         return canvasObjects;
     }
 
+    /**
+     * Take a canvasObject off the canvas, update the sidebar.
+     * 
+     * @param canvasObject The canvasObject to be deleted.
+     */
     public void delete(CanvasObject canvasObject) {
         canvasObjects.remove(canvasObject);
         if (this.focusedCanvasObject == canvasObject) {
@@ -172,6 +248,13 @@ public class Canvas extends JPanel {
         repaint();
     }
 
+    /**
+     * Conglomerate all canvasObjects, including their transformations, into
+     * one big drawingObject. For now it's just being added right back, but should
+     * be sent to an output engine (svg, gcode, or blot, mostly).
+     * 
+     * @return The conglomeration of canvasObjects as a drawingObject.
+     */
     public DrawingObject process() {
         if (canvasObjects.size() == 0)
             return null;
@@ -193,9 +276,14 @@ public class Canvas extends JPanel {
                 output.getPaths().add(path);
             }
         }
+
+        // TODO: change origin HERE
         return output;
     }
 
+    /**
+     * Delete every canvasObject!!!
+     */
     public void clear() {
         Object[] canvasObjectsArray = canvasObjects.toArray();
         for (Object canvasObject : canvasObjectsArray) {

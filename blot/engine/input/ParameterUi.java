@@ -10,6 +10,9 @@ import java.util.ArrayList;
 
 /**
  * An easy way to give engines their arguments. Uses Parameters.
+ * 
+ * I'm actually really proud of this...
+ * I'm also not sure if I'm using generics correctly
  */
 public class ParameterUi extends JFrame implements ActionListener {
     private Engine engine = null;

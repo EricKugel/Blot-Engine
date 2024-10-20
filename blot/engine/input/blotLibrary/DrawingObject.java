@@ -10,22 +10,46 @@ import blot.engine.processing.Canvas;
  */
 public class DrawingObject {
     private ArrayList<ArrayList<Point>> paths = new ArrayList<ArrayList<Point>>();
+    /**
+     * Between you and me, the whole drawingObject "origin" thing is just the random thing
+     * I tried that fixed the Canvas.process bug. Don't ask me why it works, I can't tell you.
+     */
     private Point origin;
 
+    /**
+     * All drawingObjects are initialized with the assumption that it is centered at
+     * Canvas.WIDTH / 2, Canvas.HEIGHT / 2
+     */
     public DrawingObject() {
         this.origin = new Point(Canvas.WIDTH / 2, Canvas.HEIGHT / 2);
     }
 
+    /**
+     * Basically, DrawingObject newObject = drawingObject.clone().
+     * Actually, I don't remember why I didn't just do this.
+     * 
+     * @param drawingObject The drawingObject to copy.
+     */
     public DrawingObject(DrawingObject drawingObject) {
         DrawingObject clone = drawingObject.clone();
         paths = clone.paths;
         origin = clone.origin;
     }
 
+    /**
+     * Getter method for the drawingObject's origin.
+     * 
+     * @return The origin
+     */
     public Point getOrigin() {
         return origin;
     }
 
+    /**
+     * Changes the drawingObject's origin, and translates every path accordingly.
+     * 
+     * @param origin The new origin to change to.
+     */
     public void setOrigin(Point origin) {
         for (ArrayList<Point> path : paths) {
             for (Point point : path) {
@@ -100,7 +124,8 @@ public class DrawingObject {
     }
 
     /**
-     * Gets the bounds for the drawingObject.
+     * Gets the bounds for the drawingObject. This is NOT bottomLeft, topRight.
+     * This is bottomLeft, widthHeight.
      * 
      * @return Two points: the bottom left corner, and the width/height.
      */
@@ -129,10 +154,20 @@ public class DrawingObject {
         return new Point[] {new Point(minLeft, minBottom), new Point(width, height)};
     }
 
+    /**
+     * Getter method for this drawingObject's paths.
+     * 
+     * @return The paths.
+     */
     public ArrayList<ArrayList<Point>> getPaths() {
         return paths;
     }
 
+    /**
+     * Deep copies this drawingObject's path, copies the origin as well.
+     * The origin shouldn't be mutated anyway, but you know what they say
+     * about safety/sorry
+     */
     @Override
     public DrawingObject clone() {
         DrawingObject clone = new DrawingObject();
@@ -143,11 +178,18 @@ public class DrawingObject {
             }
             clone.getPaths().add(pathClone);
         }
-        clone.setOrigin(origin);
+        clone.setOrigin(origin.clone());
 
         return clone;
     }
 
+    /**
+     * This is like set().update() in python
+     * I have no idea if this works with two different origins.
+     * I hope so
+     * 
+     * @param drawingObject The drawingObject to update paths with
+     */
     public void update(DrawingObject drawingObject) {
         for (ArrayList<Point> path : drawingObject.clone().getPaths()) {
             paths.add(path);

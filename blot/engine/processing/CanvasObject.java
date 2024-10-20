@@ -7,7 +7,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 /**
- * Class for representing a drawing object on a canvas. 
+ * Class for representing a drawingObject on a canvas. 
  * Includes the center position, the rotation, and the scaling.
  */
 public class CanvasObject {
@@ -27,6 +27,11 @@ public class CanvasObject {
 
     private String name;
 
+    /**
+     * Construct a new canvasObject!
+     * 
+     * @param drawingObject The drawingObject to wrap
+     */
     public CanvasObject(DrawingObject drawingObject) {
         this.drawingObject = drawingObject;
         this.rotation = 0;
@@ -44,6 +49,12 @@ public class CanvasObject {
         this.setName("Canvas Object " + totalObjects);
     }
 
+    /**
+     * Construct a new canvasObject with a special name!
+     * 
+     * @param drawingObject The drawingObject to wrap
+     * @param name The canvasObject's new name
+     */
     public CanvasObject(DrawingObject drawingObject, String name) {
         this(drawingObject);
         this.name = name;
@@ -53,6 +64,11 @@ public class CanvasObject {
         this.name = name;
     }
 
+    /**
+     * Draw the drawingObject (transformed), and the knobs around it if needed
+     * 
+     * @param g The graphics to draw on
+     */
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
         for (ArrayList<Point> path : this.drawingObject.getPaths()) {
@@ -91,10 +107,14 @@ public class CanvasObject {
                 g.drawLine((int) knobs[i].getRenderPoint().getX(), (int) knobs[i].getRenderPoint().getY(), (int) knobs[i + 1].getRenderPoint().getX(), (int) knobs[i + 1].getRenderPoint().getY());
             }
             g.drawLine((int) knobs[0].getRenderPoint().getX(), (int) knobs[0].getRenderPoint().getY(), (int) knobs[6 + 1].getRenderPoint().getX(), (int) knobs[6 + 1].getRenderPoint().getY());
-        
         }
     }
 
+    /**
+     * Which knob we're dragging around
+     * 
+     * @param knob The knob we're dragging around
+     */
     public void press(Knob knob) {
         if (this.pressedKnob != null) {
             this.pressedKnob.setPressed(false);
@@ -103,6 +123,9 @@ public class CanvasObject {
         knob.setPressed(true);
     }
 
+    /**
+     * Let go of all knobs
+     */
     public void unpress() {
         if (this.pressedKnob != null) {
             this.pressedKnob.setPressed(false);

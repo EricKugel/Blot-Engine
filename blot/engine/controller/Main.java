@@ -1,15 +1,21 @@
 package blot.engine.controller;
 
-import java.util.HashMap;
 
 import blot.engine.gui.Gui;
 import blot.engine.input.blotLibrary.DrawingObject;
 import blot.engine.input.blotLibrary.Point;
 import blot.engine.input.codeEngines.TransformationTelevision;
-import blot.engine.input.imageEngines.ExampleImageEngine;
 import blot.engine.processing.CanvasObject;
 
+/**
+ * Run this class!.
+ */
 public class Main {
+    /**
+     * Main method of the main class.
+     * 
+     * @param arg0 Command line arguments
+     */
     public static void main(String[] arg0) {
         // ExampleImageEngine engine = new ExampleImageEngine();
         // HashMap<String, Object> parameterValues = engine.getParameterUi().getParameters();
@@ -35,6 +41,5 @@ public class Main {
         gui.getCanvas().add(canvasObject2);
         gui.getCanvas().focus(canvasObject);
         gui.repaint();
-        // gui.getCanvas().add(canvasObject1);
     }
 }
