@@ -1,0 +1,9 @@
+blot.engine.controller
+blot.engine.gui
+blot.engine.input
+blot.engine.input.blotLibrary
+blot.engine.input.codeEngines
+blot.engine.input.imageEngines
+blot.engine.input.parameters
+blot.engine.output
+blot.engine.processing
