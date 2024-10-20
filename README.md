@@ -1,7 +1,5 @@
 # Blot-Engine 
 
-[//]: # ./javadoc -d "C:/Users/erick/Documents/Programming/Java/Blot Engine/html" -sourcepath "C:\Users\erick\Documents\Programming\Java\Blot Engine" -classpath "C:/Users/erick/Documents/Programming/Java/Blot Engine/lib/jSerialComm-2.11.0.jar" -subpackages blot.engine
-
 This is an engine to be used with [hackclub blot project](https://github.com/hackclub/blot). It is software written in Java to produce (from code, images, text, etc) and draw drawings with more freedom than the current editor provides. This project will be incorporating the work of several contributors with their permission, as well as creating new code/images/text->drawing engines.
 
 ## Anticipated Features
