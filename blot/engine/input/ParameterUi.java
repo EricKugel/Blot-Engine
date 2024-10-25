@@ -45,7 +45,7 @@ public class ParameterUi extends JFrame implements ActionListener {
             e.printStackTrace();
         }
 
-        return this.parameterValues;
+        return parameterValues;
     }
 
     private HashMap<String, Object> submit() {
@@ -59,7 +59,7 @@ public class ParameterUi extends JFrame implements ActionListener {
                 return null;
             }
         }
-        this.dispose();
+        dispose();
         return dataMap;
     }
 

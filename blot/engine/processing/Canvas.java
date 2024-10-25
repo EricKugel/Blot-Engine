@@ -37,7 +37,7 @@ public class Canvas extends JPanel {
     public Canvas(Gui gui) {
         this.gui = gui;
         Canvas canvas = this;
-        this.addMouseListener(new MouseAdapter() {
+        addMouseListener(new MouseAdapter() {
             /**
              * Check if we should be worried about the knob logic
              */
@@ -64,7 +64,7 @@ public class Canvas extends JPanel {
                 repaint();
             }
         });
-        this.addMouseMotionListener(new MouseMotionAdapter() {
+        addMouseMotionListener(new MouseMotionAdapter() {
             /**
              * Here we go...........
              * 
@@ -106,7 +106,7 @@ public class Canvas extends JPanel {
                 }
             }
         });
-        this.addKeyListener(new KeyListener() {
+        addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     isShiftPressed = true;
@@ -162,7 +162,7 @@ public class Canvas extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         g.clearRect(0, 0, Gui.CANVAS_SIZE, Gui.CANVAS_SIZE);
-        for (CanvasObject canvasObject : this.canvasObjects) {
+        for (CanvasObject canvasObject : canvasObjects) {
             if (!canvasObject.isFocused()) {
                 canvasObject.draw(g);
             }
@@ -179,7 +179,7 @@ public class Canvas extends JPanel {
      * @param drawingObject
      */
     public void add(DrawingObject drawingObject) {
-        this.add(new CanvasObject(drawingObject));
+        add(new CanvasObject(drawingObject));
     }
 
     /**
@@ -188,9 +188,9 @@ public class Canvas extends JPanel {
      * @param canvasObject The canvasObject to add
      */
     public void add(CanvasObject canvasObject) {
-        this.canvasObjects.add(canvasObject);
+        canvasObjects.add(canvasObject);
         gui.refreshCanvasObjectList();
-        this.repaint();
+        repaint();
     }
 
     /**
@@ -199,21 +199,21 @@ public class Canvas extends JPanel {
      * @param canvasObject
      */
     public void focus(CanvasObject canvasObject) {
-        if (this.focusedCanvasObject != null) {
-            this.focusedCanvasObject.setFocused(false);
+        if (focusedCanvasObject != null) {
+            focusedCanvasObject.setFocused(false);
         }
         canvasObject.setFocused(true);
-        this.focusedCanvasObject = canvasObject;
+        focusedCanvasObject = canvasObject;
     }
 
     /**
      * No canvasObject should have its knobs drawn.
      */
     public void unfocus() {
-        if (this.focusedCanvasObject != null) {
-            this.focusedCanvasObject.setFocused(false);
+        if (focusedCanvasObject != null) {
+            focusedCanvasObject.setFocused(false);
         }
-        this.focusedCanvasObject = null;
+        focusedCanvasObject = null;
     }
 
     /**
@@ -222,7 +222,7 @@ public class Canvas extends JPanel {
      * @return The canvasObject which has its knobs drawn
      */
     public CanvasObject getFocusedCanvasObject() {
-        return this.focusedCanvasObject;
+        return focusedCanvasObject;
     }
 
     /**
@@ -241,7 +241,7 @@ public class Canvas extends JPanel {
      */
     public void delete(CanvasObject canvasObject) {
         canvasObjects.remove(canvasObject);
-        if (this.focusedCanvasObject == canvasObject) {
+        if (focusedCanvasObject == canvasObject) {
             unfocus();
         }
         gui.refreshCanvasObjectList();

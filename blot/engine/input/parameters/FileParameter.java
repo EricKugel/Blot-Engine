@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 public class FileParameter extends Parameter<File> {
     public static final int IMAGE = 0;
     public static final int TEXT = 1;
+    public static final int SVG = 2;
     public static final int OTHER = 2;
 
     private JFileChooser fileChooser = null;
@@ -30,6 +31,9 @@ public class FileParameter extends Parameter<File> {
             fileChooser.setAcceptAllFileFilterUsed(false);
         } else if (fileType == TEXT) {
             fileChooser.setFileFilter(new FileNameExtensionFilter("Text files", "txt"));
+            fileChooser.setAcceptAllFileFilterUsed(false);
+        } else if (fileType == SVG) {
+            fileChooser.setFileFilter(new FileNameExtensionFilter("SVG files", "svg"));
             fileChooser.setAcceptAllFileFilterUsed(false);
         } else if (fileType == OTHER) {
             System.out.println("WARNING: Please implement the desired file type in blot.engine.input.parameters.FileParameter");

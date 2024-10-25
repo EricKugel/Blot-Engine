@@ -64,7 +64,7 @@ public class Communicator implements SerialPortMessageListener {
             System.out.print((int) b + " ");
         }
         System.out.println("]");
-        this.response = message;
+        response = message;
     }
 
     public void flushQueue() throws Exception {

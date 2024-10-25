@@ -21,7 +21,7 @@ public class Turtle {
     }
 
     public double getAngle() {
-        return this.angle;
+        return angle;
     }
 
     public void setAngle(double angle) {
@@ -38,7 +38,7 @@ public class Turtle {
     }
 
     public Point getPosition() {
-        return this.position;
+        return position;
     }
 
     public void setPosition(Point position) {
@@ -49,19 +49,19 @@ public class Turtle {
      * Lifts the pen.
      */
     public void up() {
-        if (!this.isDrawing) {
+        if (!isDrawing) {
             return;
         }
-        this.isDrawing = false;
-        this.drawingObject.addPoint(position);
-        this.drawingObject.newLine();
+        isDrawing = false;
+        drawingObject.addPoint(position);
+        drawingObject.newLine();
     }
 
     /**
      * Sets the pen down.
      */
     public void down() {
-        this.isDrawing = true;
+        isDrawing = true;
     }
 
     /**
@@ -71,22 +71,22 @@ public class Turtle {
      * @param y the destination's y value.
      */
     public void goTo(double x, double y) {
-        if (this.isDrawing) {
-            double lastX = this.position.getX();
-            double lastY = this.position.getY();
+        if (isDrawing) {
+            double lastX = position.getX();
+            double lastY = position.getY();
             double dist = Math.sqrt(Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2));
             if (dist < 0.0001) {
                 return;
             }
 
-            if (this.drawingObject.getLastPath().size() > 0 && this.drawingObject.getLastPath().getLast().equals(this.position)) {
-                this.drawingObject.deletePoint();
+            if (drawingObject.getLastPath().size() > 0 && drawingObject.getLastPath().getLast().equals(position)) {
+                drawingObject.deletePoint();
             }
-            this.drawingObject.addPoint(this.position);
-            this.drawingObject.addPoint(new Point(x, y));
+            drawingObject.addPoint(position);
+            drawingObject.addPoint(new Point(x, y));
         }
 
-        this.position = new Point(x, y);
+        position = new Point(x, y);
     }
 
     /**
@@ -96,9 +96,9 @@ public class Turtle {
      * @param dy how far to move in the y direction.
      */
     public void step(double dx, double dy) {
-        double x = this.position.getX();
-        double y = this.position.getY();
-        this.goTo(x + dx, y + dy);
+        double x = position.getX();
+        double y = position.getY();
+        goTo(x + dx, y + dy);
     }
 
     /**
@@ -108,15 +108,15 @@ public class Turtle {
      * @param y the destination's y value.
      */
     public void jump(double x, double y) {
-        if (this.drawingObject.getLastPath().size() == 1) {
-            this.drawingObject.deletePoint();
-            this.drawingObject.addPoint(new Point(x, y));
+        if (drawingObject.getLastPath().size() == 1) {
+            drawingObject.deletePoint();
+            drawingObject.addPoint(new Point(x, y));
             return;
         }
 
-        this.up();
-        this.goTo(x, y);
-        this.down();
+        up();
+        goTo(x, y);
+        down();
     }
 
     /**
@@ -125,13 +125,13 @@ public class Turtle {
      * @param distance how far to move.
      */
     public void forward(double distance) {
-        double lastX = this.position.getX();
-        double lastY = this.position.getY();
-        double a = (this.angle / 180) * Math.PI;
+        double lastX = position.getX();
+        double lastY = position.getY();
+        double a = (angle / 180) * Math.PI;
         double x = (double) (lastX + distance * Math.cos(a));
         double y = (double) (lastY + distance * Math.sin(a));
 
-        this.goTo(x, y);
+        goTo(x, y);
     }
 
     /**
@@ -141,7 +141,18 @@ public class Turtle {
      * @param radius the radius of the arc.
      */
     public void arc(double angle, double radius) {
-        if (angle * radius == 0) {
+        ellipticalArc(angle, radius, radius);
+    }
+
+    /**
+     * Draws an elliptical arc. Change the resolution with Turtle.setResolution
+     * 
+     * @param angle
+     * @param xRadius
+     * @param yRadius
+     */
+    public void ellipticalArc(double angle, double xRadius, double yRadius) {
+        if (angle * xRadius * yRadius == 0) {
             return;
         }
 
@@ -151,32 +162,113 @@ public class Turtle {
         
         for (int i = 0; i <= n; i++) {
             double theta = angle / n * i;
-            points.add(new Point((double) (radius * Math.cos(theta)), (double) (radius * Math.sin(theta))));
+            points.add(new Point((double) (xRadius * Math.cos(theta)), (double) (yRadius * Math.sin(theta))));
         }
 
         Point initial = points.get(0).clone();
         for (Point point : points) {
-            point.translate(this.position.getX(), this.position.getY(), initial.getX(), initial.getY());
-            point.rotate(this.angle + (angle < 0 ? 90 : -90), this.position.getX(), this.position.getY());
+            point.translate(position.getX(), position.getY(), initial.getX(), initial.getY());
+            point.rotate(this.angle + (angle < 0 ? 90 : -90), position.getX(), position.getY());
         }
 
         for (int i = 1; i <= n; i++) {                
-            this.goTo(points.get(i).getX(), points.get(i).getY());
-            // if (i == 1) {
-            //     this.jump(points.get(i).getX(), points.get(i).getY());
-            // } else {
-            // }
+            goTo(points.get(i).getX(), points.get(i).getY());
         }
 
-        this.setAngle(this.angle + Math.toDegrees(angle));
+        this.angle += Math.toDegrees(angle);
     }
+
+    /**
+     * Draws a quadratic bezier curve (if the pen is down).
+     * 
+     * @param x1 X component of control point
+     * @param y1 Y component of control point
+     * @param x2 X component of ending point
+     * @param y2 Y component of ending point
+     */
+    public void quadraticBezier(double x1, double y1, double x2, double y2) {
+        double x0 = position.getX();
+        double y0 = position.getY();
+        for (int i = 0; i <= resolution; i++) {
+            double t = (double) i / resolution;
+            double x = (1-t)*(1-t)*x0 + 2*(1-t)*t*x1 + t*t*x2;
+            double y = (1-t)*(1-t)*y0 + 2*(1-t)*t*y1 + t*t*y2;
+            goTo(x, y);
+        }
+    }
+
+    /**
+     * Helper function because Java doesn't have unpacking.
+     * 
+     * @param buffer The 2 coords of the quadratic bezier
+     */
+    public void quadraticBezier(double[] buffer) {
+        quadraticBezier(buffer[0], buffer[1], buffer[2], buffer[3]);
+    }
+
+    /**
+     * Helper function to use relative coordinates.
+     * 
+     * @param buffer The 2 relative coords of the quadratic bezier
+     */
+    public void relativeQuadraticBezier(double[] buffer) {
+        quadraticBezier(buffer[0] + position.getX(), buffer[1] + position.getY(), 
+                        buffer[2] + position.getX(), buffer[3] + position.getY());
+    }
+
+    /**
+     * Draws a cubic bezier curve (if the pen is down).
+     * 
+     * @param x1 The x-component of the first control point
+     * @param y1 The y-component of the first control point
+     * @param x2 The x-component of the second control point
+     * @param y2 The y-component of the second control point
+     * @param x3 The x-component of the ending point
+     * @param y3 The y-component of the ending point
+     */
+    public void cubicBezier(double x1, double y1, double x2, double y2, double x3, double y3) {
+        double x0 = position.getX();
+        double y0 = position.getY();
+        for (int i = 0; i <= resolution; i++) {
+            double t = (double) i / resolution;
+            double x = Math.pow(1-t, 3)*x0 + 3*(1-t)*(1-t)*t*x1 + 3*(1-t)*t*t*x2 + t*t*t*x3;
+            double y = Math.pow(1-t, 3)*y0 + 3*(1-t)*(1-t)*t*y1 + 3*(1-t)*t*t*y2 + t*t*t*y3;
+            goTo(x, y);
+        }
+    }
+
+    /**
+     * Helper function because Java doesn't have unpacking.
+     * 
+     * @param buffer The 3 coords of the cubic bezier
+     */
+    public void cubicBezier(double[] buffer) {
+        cubicBezier(buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5]);
+    }
+
+    /**
+     * Helper function to use relative coordinates.
+     * 
+     * @param buffer The 3 relative coords of the cubic bezier
+     */
+    public void relativeCubicBezier(double[] buffer) {
+        cubicBezier(buffer[0] + position.getX(), buffer[1] + position.getY(), buffer[2] + position.getX(),
+                    buffer[3] + position.getY(), buffer[4] + position.getX(), buffer[5] + position.getY());
+    }
+
     /**
      * Turns to the right a certain number of degrees.
      * 
      * @param theta the number of degrees to turn to the right
      */
     public void right(double theta) {
-        this.angle -= theta;
+        angle -= theta;
+    }
+
+    public void svgArc(double xRadius, double yRadius, double rotation, 
+                       double flag1, double flag2, double x, double y) {
+        // TODO: Implement at your own peril
+        goTo(x, y);
     }
 
     /**
@@ -185,7 +277,7 @@ public class Turtle {
      * @param theta the number of degrees to turn to the left.
      */
     public void left(double theta) {
-        this.angle += theta;
+        angle += theta;
     }
 
     /**
@@ -195,5 +287,15 @@ public class Turtle {
      */
     public DrawingObject getDrawingObject() {
         return drawingObject;
+    }
+    
+    /**
+     * Goes back to the first point.
+     */
+    public void closePath() {
+        if (drawingObject.getLastPath().size() > 0) {
+            Point point = drawingObject.getLastPath().get(0);
+            goTo(point.getX(), point.getY());
+        }
     }
 }

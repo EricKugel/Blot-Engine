@@ -4,6 +4,7 @@ package blot.engine.input.blotLibrary;
  * Basic class for storing blot coords. Includes point transformation functions as well.
  */
 public class Point {
+    public static final Point ZERO = new Point(0, 0);
     private double x;
     private double y;
 
@@ -15,11 +16,11 @@ public class Point {
     @Override
     public boolean equals(Object other) {
         Point otherPoint = (Point) other;
-        return this.x == otherPoint.getX() && this.y == otherPoint.getY();
+        return x == otherPoint.getX() && y == otherPoint.getY();
     }
 
     public Point clone() {
-        return new Point(this.x, this.y);
+        return new Point(x, y);
     }
 
     // The following up to and including dot are vector operations
@@ -56,11 +57,11 @@ public class Point {
     }
 
     public double getX() {
-        return this.x;
+        return x;
     }
 
     public double getY() {
-        return this.y;
+        return y;
     }
 
     /**
@@ -77,8 +78,8 @@ public class Point {
      * @param originY the y coordinate of the transformation's origin.
      */
     public void translate(double dx, double dy, double originX, double originY) {
-        this.setX(this.x + dx - originX);
-        this.setY(this.y + dy - originY);
+        x += dx - originX;
+        y += dy - originY;
     }
 
     /**
@@ -91,11 +92,11 @@ public class Point {
     public void rotate(double angle, double originX, double originY) {
         angle = Math.toRadians(angle);
 
-        double hereX = this.x - originX;
-        double hereY = this.y - originY;
+        double hereX = x - originX;
+        double hereY = y - originY;
 
-        this.setX((double) (hereX * Math.cos(angle) - hereY * Math.sin(angle) + originX));
-        this.setY((double) (hereY * Math.cos(angle) + hereX * Math.sin(angle) + originY));
+        x = (double) (hereX * Math.cos(angle) - hereY * Math.sin(angle) + originX);
+        y = (double) (hereY * Math.cos(angle) + hereX * Math.sin(angle) + originY);
     }
 
     /**
@@ -107,7 +108,7 @@ public class Point {
      * @param originY the y coordinate of the transformation's origin.
      */
     public void scale(double factorX, double factorY, double originX, double originY) {
-        setX((this.x - originX) * factorX + originX);
-        setY((this.y - originY) * factorY + originY);
+        x = (x - originX) * factorX + originX;
+        y = (y - originY) * factorY + originY;
     }
 }

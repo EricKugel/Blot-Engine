@@ -37,7 +37,7 @@ public class Gui extends JFrame {
      * @return The Canvas
      */
     public Canvas getCanvas() {
-        return this.canvas;
+        return canvas;
     }
 
     /**
@@ -78,7 +78,7 @@ public class Gui extends JFrame {
     public void refreshCanvasObjectList() {
         sidebar.removeAll();
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.PAGE_AXIS));
-        for (CanvasObject canvasObject : this.canvas.getCanvasObjects()) {
+        for (CanvasObject canvasObject : canvas.getCanvasObjects()) {
             SidebarObject sidebarObject = new SidebarObject(canvasObject, canvas);
             sidebar.add(sidebarObject);
         }

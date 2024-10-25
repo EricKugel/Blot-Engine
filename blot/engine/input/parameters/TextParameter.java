@@ -23,7 +23,7 @@ public class TextParameter extends Parameter<String> {
     }
 
     public String getValue() throws ParameterValidationException {
-        if (required && textField.getText() == "") {
+        if (required && textField.getText().isEmpty()) {
             throw new ParameterValidationException(getTitle() + " is a required field");
         }
         return textField.getText();

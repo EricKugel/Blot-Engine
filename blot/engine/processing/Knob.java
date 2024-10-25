@@ -69,28 +69,28 @@ public class Knob extends Point {
      * @param g The graphics to draw on
      */
     public void draw(Graphics g) {
-        g.setColor(this.isPressed ? Color.RED : Color.BLUE);
+        g.setColor(isPressed ? Color.RED : Color.BLUE);
         
         if (type == ROTATOR) {
             Knob referenceKnob = null;
-            for (Knob knob : this.canvasObject.getKnobs()) {
+            for (Knob knob : canvasObject.getKnobs()) {
                 if (knob.type == CENTER_TOP) {
                     referenceKnob = knob;
                 }
             }
 
             Point difference = new Point(0, 30);
-            difference.rotate(-this.canvasObject.getRotation(), 0, 0);
+            difference.rotate(-canvasObject.getRotation(), 0, 0);
             renderPoint = Point.sub(referenceKnob.getRenderPoint(), difference);
         } else {
             renderPoint = ((Point) this).clone();
-            renderPoint.scale(this.canvasObject.getWidth() / 2 * this.canvasObject.getScaleX(), this.canvasObject.getHeight() / 2 * this.canvasObject.getScaleY(), 0, 0);
-            renderPoint.translate(this.canvasObject.getPosition().getX(), this.canvasObject.getPosition().getY(), 0, 0);
-            renderPoint.rotate(this.canvasObject.getRotation(), this.canvasObject.getPosition().getX(), this.canvasObject.getPosition().getY());
+            renderPoint.scale(canvasObject.getWidth() / 2 * canvasObject.getScaleX(), canvasObject.getHeight() / 2 * canvasObject.getScaleY(), 0, 0);
+            renderPoint.translate(canvasObject.getPosition().getX(), canvasObject.getPosition().getY(), 0, 0);
+            renderPoint.rotate(canvasObject.getRotation(), canvasObject.getPosition().getX(), canvasObject.getPosition().getY());
             renderPoint = Canvas.transformToCanvas(renderPoint);
         }
         
-        if (this.type != CENTER_CENTER) {
+        if (type != CENTER_CENTER) {
             g.fillArc((int) renderPoint.getX() - 3, (int) renderPoint.getY() - 3, 6, 6, 0, 360);
         } else {
             int crossSize = 7;
@@ -101,7 +101,7 @@ public class Knob extends Point {
                 Point.add(renderPoint, new Point(0, -crossSize)),
             };
             for (Point vertex : vertices) {
-                vertex.rotate(-this.canvasObject.getRotation(), renderPoint.getX(), renderPoint.getY());
+                vertex.rotate(-canvasObject.getRotation(), renderPoint.getX(), renderPoint.getY());
             }
             g.drawLine((int) vertices[0].getX(), (int) vertices[0].getY(), (int) vertices[1].getX(), (int) vertices[1].getY());
             g.drawLine((int) vertices[2].getX(), (int) vertices[2].getY(), (int) vertices[3].getX(), (int) vertices[3].getY());
@@ -117,7 +117,7 @@ public class Knob extends Point {
     public boolean contains(Point point) {
         int maxDistance = type == CENTER_CENTER ? 6 : 4;
         if (renderPoint != null) {
-            double distance = Math.hypot((point.getX() - this.renderPoint.getX()), (point.getY() - this.renderPoint.getY()));
+            double distance = Math.hypot((point.getX() - renderPoint.getX()), (point.getY() - renderPoint.getY()));
             return (distance <= maxDistance);
         }
         return false;
@@ -136,8 +136,8 @@ public class Knob extends Point {
         Point difference = Point.sub(Canvas.transformFromCanvas(point), Canvas.transformFromCanvas(renderPoint));
         // if shift pressed and on a diagonal, project the difference onto the diagonal...
         // I feel like a genius
-        if ((this.type == LEFT_TOP || this.type == RIGHT_TOP ||
-             this.type == LEFT_BOTTOM || this.type == RIGHT_BOTTOM) && isShiftPressed) {
+        if ((type == LEFT_TOP || type == RIGHT_TOP ||
+             type == LEFT_BOTTOM || type == RIGHT_BOTTOM) && isShiftPressed) {
             Point goodDifference = Point.sub(Canvas.transformFromCanvas(renderPoint), canvasObject.getPosition());
             goodDifference = Point.direction(goodDifference);
             difference = Point.mult(goodDifference, Point.dot(difference, goodDifference));
@@ -145,25 +145,25 @@ public class Knob extends Point {
 
         difference.rotate(-canvasObject.getRotation(), 0, 0);
 
-        if (this.type < 8) {
+        if (type < 8) {
             Point widthDifference = difference.clone();
-            if (4 <= this.type && this.type < 7) { // left
+            if (4 <= type && type < 7) { // left
                 widthDifference.setX(-widthDifference.getX());
-            } if (2 <= this.type && this.type < 5) { // bottom
+            } if (2 <= type && type < 5) { // bottom
                 widthDifference.setY(-widthDifference.getY());
             }
 
             double newScaleX = (canvasObject.getWidth() * canvasObject.getScaleX() + widthDifference.getX()) / canvasObject.getWidth();
             double newScaleY = (canvasObject.getHeight() * canvasObject.getScaleY() + widthDifference.getY()) / canvasObject.getHeight();
         
-            if (!(this.type == CENTER_TOP || this.type == CENTER_BOTTOM)) canvasObject.setScaleX(newScaleX);
-            if (!(this.type == LEFT_CENTER || this.type == RIGHT_CENTER)) canvasObject.setScaleY(newScaleY);
+            if (!(type == CENTER_TOP || type == CENTER_BOTTOM)) canvasObject.setScaleX(newScaleX);
+            if (!(type == LEFT_CENTER || type == RIGHT_CENTER)) canvasObject.setScaleY(newScaleY);
 
-            if (this.type == LEFT_CENTER || this.type == RIGHT_CENTER) difference.setY(0);
-            if (this.type == CENTER_TOP || this.type == CENTER_BOTTOM) difference.setX(0);
+            if (type == LEFT_CENTER || type == RIGHT_CENTER) difference.setY(0);
+            if (type == CENTER_TOP || type == CENTER_BOTTOM) difference.setX(0);
             difference.rotate(canvasObject.getRotation(), 0, 0);
             canvasObject.setPosition(new Point(canvasObject.getPosition().getX() + difference.getX() / 2, canvasObject.getPosition().getY() + difference.getY() / 2));
-        } else if (this.type == ROTATOR) {
+        } else if (type == ROTATOR) {
             Point vector = Point.sub(Canvas.transformFromCanvas(point), canvasObject.getPosition());
             double angle = 0;
             if (vector.getX() == 0) {
@@ -172,7 +172,7 @@ public class Knob extends Point {
                 angle = Math.toDegrees(Math.atan(vector.getY() / vector.getX())) + (vector.getX() < 0 ? 180 : 0);
             }
             canvasObject.setRotation(angle - 90 + (canvasObject.getScaleY() < 0 ? 180 : 0));
-        } else if (this.type == CENTER_CENTER) {
+        } else if (type == CENTER_CENTER) {
             difference.rotate(canvasObject.getRotation(), 0, 0);
             canvasObject.setPosition(new Point(canvasObject.getPosition().getX() + difference.getX(), canvasObject.getPosition().getY() + difference.getY()));
         }

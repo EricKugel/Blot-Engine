@@ -21,7 +21,7 @@ public class DrawingObject {
      * Canvas.WIDTH / 2, Canvas.HEIGHT / 2
      */
     public DrawingObject() {
-        this.origin = new Point(Canvas.WIDTH / 2, Canvas.HEIGHT / 2);
+        origin = new Point(Canvas.WIDTH / 2, Canvas.HEIGHT / 2);
     }
 
     /**

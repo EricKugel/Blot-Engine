@@ -34,19 +34,19 @@ public class CanvasObject {
      */
     public CanvasObject(DrawingObject drawingObject) {
         this.drawingObject = drawingObject;
-        this.rotation = 0;
-        this.scaleX = 1;
-        this.scaleY = 1;
+        rotation = 0;
+        scaleX = 1;
+        scaleY = 1;
 
         Point[] bounds = drawingObject.getBounds();
-        this.width = bounds[1].getX();
-        this.height = bounds[1].getY();
+        width = bounds[1].getX();
+        height = bounds[1].getY();
 
-        this.position = Point.add(bounds[0], Point.mult(bounds[1], 0.5));
-        drawingObject.setOrigin(this.position);
+        position = Point.add(bounds[0], Point.mult(bounds[1], 0.5));
+        drawingObject.setOrigin(position);
 
         totalObjects += 1;
-        this.setName("Canvas Object " + totalObjects);
+        name = "Canvas Object " + totalObjects;
     }
 
     /**
@@ -71,14 +71,14 @@ public class CanvasObject {
      */
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
-        for (ArrayList<Point> path : this.drawingObject.getPaths()) {
+        for (ArrayList<Point> path : drawingObject.getPaths()) {
             ArrayList<Point> transformedPath = new ArrayList<Point>();
             for (int i = 0; i < path.size(); i++) {
                 Point point = path.get(i).clone();
                 point.translate(position.getX(), position.getY(), Canvas.HEIGHT / 2, Canvas.WIDTH / 2);
-                point.scale((double) this.scaleX, (double) this.scaleY, position.getX(), position.getY());
+                point.scale((double) scaleX, (double) scaleY, position.getX(), position.getY());
                 if (rotation != 0) {
-                    point.rotate(this.rotation, position.getX(), position.getY());
+                    point.rotate(rotation, position.getX(), position.getY());
                 }   
                 transformedPath.add(point);
             }
@@ -96,7 +96,7 @@ public class CanvasObject {
             }
         }
 
-        if (this.isFocused()) {
+        if (isFocused) {
             for (Knob knob : knobs) {
                 knob.draw(g);
             }
@@ -116,10 +116,10 @@ public class CanvasObject {
      * @param knob The knob we're dragging around
      */
     public void press(Knob knob) {
-        if (this.pressedKnob != null) {
-            this.pressedKnob.setPressed(false);
+        if (pressedKnob != null) {
+            pressedKnob.setPressed(false);
         }
-        this.pressedKnob = knob;
+        pressedKnob = knob;
         knob.setPressed(true);
     }
 
@@ -127,18 +127,18 @@ public class CanvasObject {
      * Let go of all knobs
      */
     public void unpress() {
-        if (this.pressedKnob != null) {
-            this.pressedKnob.setPressed(false);
+        if (pressedKnob != null) {
+            pressedKnob.setPressed(false);
         }
-        this.pressedKnob = null;
+        pressedKnob = null;
     }
 
     public DrawingObject getDrawingObject() {
-        return this.drawingObject;
+        return drawingObject;
     }
 
     public Point getPosition() {
-        return this.position;
+        return position;
     }
 
     public void setPosition(Point position) {
@@ -146,7 +146,7 @@ public class CanvasObject {
     }
 
     public double getRotation() {
-        return this.rotation;
+        return rotation;
     }
 
     public void setRotation(double rotation) {
@@ -154,7 +154,7 @@ public class CanvasObject {
     }
 
     public double getScaleX() {
-        return this.scaleX;
+        return scaleX;
     }
 
     public void setScaleX(double scaleX) {
@@ -162,7 +162,7 @@ public class CanvasObject {
     }
 
     public double getScaleY() {
-        return this.scaleY;
+        return scaleY;
     }
 
     public void setScaleY(double scaleY) {
@@ -171,32 +171,32 @@ public class CanvasObject {
 
     public void setFocused(boolean isFocused) {
         if (!isFocused) {
-            this.unpress();
+            unpress();
         }
         this.isFocused = isFocused;
     }
 
     public boolean isFocused() {
-        return this.isFocused;
+        return isFocused;
     }
 
     public double getWidth() {
-        return this.width;
+        return width;
     }
 
     public double getHeight() {
-        return this.height;
+        return height;
     }
 
     public Knob[] getKnobs() {
-        return this.knobs;
+        return knobs;
     }
 
     public Knob getPressedKnob() {
-        return this.pressedKnob;
+        return pressedKnob;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 }

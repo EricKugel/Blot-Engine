@@ -20,7 +20,7 @@ public abstract class Parameter<T> extends JPanel {
     }
     
     public String getTitle() {
-        return this.title;
+        return title;
     }
 
     public void setTitle(String title) {
