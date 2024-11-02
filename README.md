@@ -18,4 +18,4 @@ This is an engine to be used with [hackclub blot project](https://github.com/hac
  - Reordering, translating, rotating, and scaling drawingObjects on a canvas, output to a processed drawingObject
  - Connect to a Blot machine using jSerialComm and send simple move & pen instructions.
 
-Remember to add jSerialComm to the classpath before running.
+Remember to add jSerialComm to the classpath before running!
